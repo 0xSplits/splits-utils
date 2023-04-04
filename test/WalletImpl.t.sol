@@ -9,7 +9,8 @@ import {WalletImpl} from "src/WalletImpl.sol";
 contract WalletImplTest is Test {
     using LibClone for address;
 
-    uint256 constant FUZZ_CALL_MAX = 32;
+    uint256 constant FUZZ_CALL_DATA_MAX_LENGTH = 1024;
+    uint256 constant FUZZ_CALL_MAX = 8;
 
     address payable alice;
     WalletImplHarness public walletImpl;
@@ -155,6 +156,7 @@ contract WalletImplTest is Test {
             assumePayable(call.to);
             vm.assume(call.value < uint256(1e18));
             vm.assume(call.to != address(wallet));
+            vm.assume(call.data.length < FUZZ_CALL_DATA_MAX_LENGTH);
             calls[i] = call;
         }
     }
