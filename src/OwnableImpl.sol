@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 /// @title OwnableImpl
 /// @author 0xSplits
-/// @notice Bare bones ownable contract
+/// @notice Ownable clone-implementation
 abstract contract OwnableImpl {
     error Unauthorized();
 

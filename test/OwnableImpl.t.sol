@@ -33,6 +33,10 @@ contract OwnableImplTest is Test {
     /// tests - basic
     /// -----------------------------------------------------------------------
 
+    /// -----------------------------------------------------------------------
+    /// tests - basic - init
+    /// -----------------------------------------------------------------------
+
     function test_init_setsOwner() public {
         ownable.exposed_initOwnable(address(this));
         assertEq(ownable.$owner(), address(this));
@@ -43,6 +47,10 @@ contract OwnableImplTest is Test {
         emit OwnershipTransferred(address(0), address(this));
         ownable.exposed_initOwnable(address(this));
     }
+
+    /// -----------------------------------------------------------------------
+    /// tests - basic - transferOwnership
+    /// -----------------------------------------------------------------------
 
     function test_RevertWhen_CallerNotOwner_transferOwnership() public {
         vm.expectRevert(Unauthorized.selector);
@@ -68,6 +76,10 @@ contract OwnableImplTest is Test {
     /// tests - fuzz
     /// -----------------------------------------------------------------------
 
+    /// -----------------------------------------------------------------------
+    /// tests - fuzz - init
+    /// -----------------------------------------------------------------------
+
     function testFuzz_init_setsOwner(address owner_) public {
         ownable.exposed_initOwnable(owner_);
         assertEq(ownable.$owner(), owner_);
@@ -78,6 +90,10 @@ contract OwnableImplTest is Test {
         emit OwnershipTransferred(address(0), owner_);
         ownable.exposed_initOwnable(owner_);
     }
+
+    /// -----------------------------------------------------------------------
+    /// tests - fuzz - transferOwnership
+    /// -----------------------------------------------------------------------
 
     function testFuzz_RevertWhen_CallerNotOwner_transferOwnership(address owner_, address prankOwner_) public {
         vm.assume(owner_ != prankOwner_);

@@ -33,6 +33,7 @@ contract LibCloneTest is Test {
     function testFuzz_cloneCanDelegateCall(address impl, bytes calldata data) public {
         vm.assume(data.length > 0);
         assumePayable(impl);
+        assumeNoPrecompiles(impl);
 
         address clone = impl.clone();
 

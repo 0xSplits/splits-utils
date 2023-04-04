@@ -35,6 +35,10 @@ contract PausableImplTest is Test {
     /// tests - basic
     /// -----------------------------------------------------------------------
 
+    /// -----------------------------------------------------------------------
+    /// tests - basic - init
+    /// -----------------------------------------------------------------------
+
     function test_init_setsOwner() public {
         pausable.exposed_initPausable(address(this), true);
         assertEq(pausable.$owner(), address(this));
@@ -50,6 +54,10 @@ contract PausableImplTest is Test {
         pausable.exposed_initPausable(address(this), true);
         assertEq(pausable.$paused(), true);
     }
+
+    /// -----------------------------------------------------------------------
+    /// tests - basic - setsPaused
+    /// -----------------------------------------------------------------------
 
     function test_RevertWhen_CallerNotOwner_setPaused() public {
         vm.expectRevert(Unauthorized.selector);
@@ -75,6 +83,10 @@ contract PausableImplTest is Test {
     /// tests - fuzz
     /// -----------------------------------------------------------------------
 
+    /// -----------------------------------------------------------------------
+    /// tests - fuzz - init
+    /// -----------------------------------------------------------------------
+
     function testFuzz_init_setsOwner(address owner_, bool paused_) public {
         pausable.exposed_initPausable(owner_, paused_);
         assertEq(pausable.$owner(), owner_);
@@ -91,7 +103,11 @@ contract PausableImplTest is Test {
         assertEq(pausable.$paused(), paused_);
     }
 
-    function testFuzz_RevertWhen_CallerNotOwner_setPaused(address owner_, address prankOwner_, bool paused_) public {
+    /// -----------------------------------------------------------------------
+    /// tests - fuzz - setsPaused
+    /// -----------------------------------------------------------------------
+
+    function testFuzz_RevertWhen_CallerNotOwner_setPaused(address owner_, bool paused_, address prankOwner_) public {
         vm.assume(owner_ != prankOwner_);
 
         pausable.exposed_initPausable(owner_, paused_);
@@ -102,7 +118,7 @@ contract PausableImplTest is Test {
     }
 
     function testFuzz_setPaused_setsPaused(address owner_, bool paused_) public callerOwner {
-        pausable.exposed_initPausable(owner_, false);
+        pausable.exposed_initPausable(owner_, !paused_);
 
         vm.prank(owner_);
         pausable.setPaused(paused_);

@@ -5,7 +5,7 @@ import {OwnableImpl} from "src/OwnableImpl.sol";
 
 /// @title PausableImpl
 /// @author 0xSplits
-/// @notice Bare bones contract with pausable functions
+/// @notice Pausable clone-implementation
 abstract contract PausableImpl is OwnableImpl {
     error Paused();
 
