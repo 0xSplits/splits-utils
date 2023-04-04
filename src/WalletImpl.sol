@@ -3,6 +3,8 @@ pragma solidity ^0.8.17;
 
 import {OwnableImpl} from "src/OwnableImpl.sol";
 
+// TODO: open q: add exec via sig ?
+
 /// @title WalletImpl
 /// @author 0xSplits
 /// @notice Minimal smart wallet clone-implementation
