@@ -17,8 +17,8 @@ abstract contract PausableImpl is OwnableImpl {
 
     /// slot 0 - 11 bytes free
 
-    /// Owned storage
-    /// address public owner;
+    /// OwnableImpl storage
+    /// address public $owner;
     /// 20 bytes
 
     bool public $paused;

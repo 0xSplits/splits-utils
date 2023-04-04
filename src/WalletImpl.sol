@@ -5,7 +5,7 @@ import {OwnableImpl} from "src/OwnableImpl.sol";
 
 /// @title WalletImpl
 /// @author 0xSplits
-/// @notice Bare bones smart wallet functionality
+/// @notice Minimal smart wallet clone-implementation
 abstract contract WalletImpl is OwnableImpl {
     struct Call {
         address to;
@@ -21,8 +21,8 @@ abstract contract WalletImpl is OwnableImpl {
 
     /// slot 0 - 12 bytes free
 
-    /// Owned storage
-    /// address public owner;
+    /// OwnableImpl storage
+    /// address public $owner;
     /// 20 bytes
 
     /// -----------------------------------------------------------------------
