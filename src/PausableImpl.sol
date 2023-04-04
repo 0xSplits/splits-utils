@@ -31,9 +31,8 @@ abstract contract PausableImpl is OwnableImpl {
     constructor() {}
 
     function __initPausable(address owner_, bool paused_) internal {
-        // TODO: check if compiler handles packing properly
-        $paused = paused_;
         OwnableImpl.__initOwnable(owner_);
+        $paused = paused_;
     }
 
     /// -----------------------------------------------------------------------

@@ -24,9 +24,9 @@ abstract contract OwnableImpl {
 
     constructor() {}
 
-    function __initOwnable(address owner_) internal {
-        $owner = owner_;
+    function __initOwnable(address owner_) internal virtual {
         emit OwnershipTransferred(address(0), owner_);
+        $owner = owner_;
     }
 
     /// -----------------------------------------------------------------------
