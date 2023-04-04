@@ -1,18 +1,33 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "forge-std/Test.sol";
+import {BaseTest} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
 import {WalletImpl} from "src/WalletImpl.sol";
 
-contract WalletImplTest is Test {
+contract WalletImplTest is BaseTest {
     using LibClone for address;
 
-    uint256 constant FUZZ_CALL_DATA_MAX_LENGTH = 1024;
-    uint256 constant FUZZ_CALL_MAX = 8;
+    // if you crank these values up too much, forge will stack overflow
+    uint256 constant FUZZ_CALLS_MAX_LENGTH = 4;
+    uint256 constant FUZZ_CALL_MAX_VALUE = 1e18;
+    uint256 constant FUZZ_CALL_MAX_DATA_LENGTH_IN_WORDS = 4;
+    uint256 constant FUZZ_CALL_MAX_DATA_LENGTH = FUZZ_CALL_MAX_DATA_LENGTH_IN_WORDS * 32;
 
-    address payable alice;
+    struct FuzzCallsParams {
+        uint8 callsLength;
+        WalletImpl.Call[FUZZ_CALLS_MAX_LENGTH] calls;
+        FuzzCall[FUZZ_CALLS_MAX_LENGTH] fuzzCalls;
+    }
+
+    struct FuzzCall {
+        address to;
+        uint256 value;
+        uint16 dataLength;
+        bytes32[FUZZ_CALL_MAX_DATA_LENGTH_IN_WORDS] data;
+    }
+
     WalletImplHarness public walletImpl;
     WalletImplHarness public wallet;
 
@@ -21,12 +36,14 @@ contract WalletImplTest is Test {
     event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
     event ExecCalls(WalletImpl.Call[] calls);
 
-    function setUp() public virtual {
-        alice = createUser("Alice");
+    function setUp() public virtual override {
+        super.setUp();
 
         walletImpl = new WalletImplHarness();
         wallet = WalletImplHarness(address(walletImpl).clone());
-        vm.deal({ account: address(wallet), newBalance: 1 << 96 });
+
+        deal({account: address(wallet)});
+        vm.deal({account: address(wallet), newBalance: 1 << 96});
     }
 
     /// -----------------------------------------------------------------------
@@ -51,7 +68,7 @@ contract WalletImplTest is Test {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         wallet.exposed_initWallet(address(this));
     }
@@ -70,8 +87,8 @@ contract WalletImplTest is Test {
         wallet.exposed_initWallet(address(this));
 
         WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
-        calls[0] = WalletImpl.Call({to: alice, value: 1 ether, data: "0x123456789"});
-        vm.expectCall(alice, 1 ether, "0x123456789");
+        calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
+        vm.expectCall(users.alice, 1 ether, "0x123456789");
         wallet.execCalls(calls);
     }
 
@@ -79,8 +96,8 @@ contract WalletImplTest is Test {
         wallet.exposed_initWallet(address(this));
 
         WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
-        calls[0] = WalletImpl.Call({to: alice, value: 1 ether, data: "0x123456789"});
-        vm.expectEmit(true, true, true, true);
+        calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
+        expectEmit();
         emit ExecCalls(calls);
         wallet.execCalls(calls);
     }
@@ -99,45 +116,45 @@ contract WalletImplTest is Test {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         wallet.exposed_initWallet(owner_);
     }
 
     /// -----------------------------------------------------------------------
-    /// tests - basic - execCalls
+    /// tests - fuzz - execCalls
     /// -----------------------------------------------------------------------
 
-    function test_RevertWhen_CallerNotOwner_execCalls(address owner_, address prankOwner_) public {
+    function testFuzz_RevertWhen_CallerNotOwner_execCalls(address owner_, address prankOwner_) public {
+        wallet.exposed_initWallet(owner_);
+        vm.prank(prankOwner_);
+
         vm.assume(owner_ != prankOwner_);
 
-        wallet.exposed_initWallet(owner_);
-
-        vm.prank(prankOwner_);
         vm.expectRevert(Unauthorized.selector);
         WalletImpl.Call[] memory calls = new WalletImpl.Call[](0);
         wallet.execCalls(calls);
     }
 
-    function test_execCalls_executesCalls(address owner_, WalletImpl.Call[FUZZ_CALL_MAX] calldata calls_, uint8 callsLength_) public callerOwner {
-        WalletImpl.Call[] memory calls = cleanCalls(calls_, callsLength_);
+    function testFuzz_execCalls_executesCalls(address owner_, FuzzCallsParams calldata params_) public callerOwner {
         wallet.exposed_initWallet(owner_);
 
-        vm.prank(owner_);
+        WalletImpl.Call[] memory calls = cleanFuzzCalls(params_);
         for (uint256 i; i < calls.length; i++) {
             WalletImpl.Call memory call = calls[i];
             vm.expectCall(call.to, call.value, call.data);
         }
+        vm.prank(owner_);
         wallet.execCalls(calls);
     }
 
-    function test_execCalls_emitsExecCalls(address owner_, WalletImpl.Call[FUZZ_CALL_MAX] calldata calls_, uint8 callsLength_) public callerOwner {
-        WalletImpl.Call[] memory calls = cleanCalls(calls_, callsLength_);
+    function testFuzz_execCalls_emitsExecCalls(address owner_, FuzzCallsParams calldata params_) public callerOwner {
         wallet.exposed_initWallet(owner_);
 
-        vm.prank(owner_);
-        vm.expectEmit(true, true, true, true);
+        WalletImpl.Call[] memory calls = cleanFuzzCalls(params_);
+        expectEmit();
         emit ExecCalls(calls);
+        vm.prank(owner_);
         wallet.execCalls(calls);
     }
 
@@ -145,29 +162,33 @@ contract WalletImplTest is Test {
     /// internal
     /// -----------------------------------------------------------------------
 
-    // TODO: move into base contract ?
+    function cleanFuzzCalls(FuzzCallsParams calldata params_) internal returns (WalletImpl.Call[] memory calls) {
+        uint256 boundedCallsLength = bound(params_.callsLength, 0, FUZZ_CALLS_MAX_LENGTH);
 
-    function cleanCalls(WalletImpl.Call[FUZZ_CALL_MAX] calldata calls_, uint8 callsLength_) internal returns (WalletImpl.Call[] memory calls) {
-        uint256 boundedCallsLength = bound(callsLength_, 1, FUZZ_CALL_MAX);
         calls = new WalletImpl.Call[](boundedCallsLength);
         for (uint256 i; i < boundedCallsLength; i++) {
-            WalletImpl.Call calldata call = calls_[i];
-            assumeNoPrecompiles(call.to);
-            assumePayable(call.to);
-            vm.assume(call.value < uint256(1e18));
-            vm.assume(call.to != address(wallet));
-            vm.assume(call.data.length < FUZZ_CALL_DATA_MAX_LENGTH);
-            calls[i] = call;
+            FuzzCall calldata fuzzCall = params_.fuzzCalls[i];
+            assumeNoPrecompiles(fuzzCall.to);
+            assumePayable(fuzzCall.to);
+            vm.assume(fuzzCall.to != address(wallet));
+            vm.assume(fuzzCall.to != address(walletImpl));
+
+            uint256 boundedValue = bound(fuzzCall.value, 0, FUZZ_CALL_MAX_VALUE);
+            uint256 boundedDataLength = bound(fuzzCall.dataLength, 0, FUZZ_CALL_MAX_DATA_LENGTH);
+            bytes memory boundedData = boundedBytes(fuzzCall.data, boundedDataLength);
+            calls[i] = WalletImpl.Call({to: fuzzCall.to, value: boundedValue, data: boundedData});
         }
     }
 
-    /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH, 1 million DAI,
-    /// and 1 million USDC.
-    function createUser(string memory name) internal returns (address payable addr) {
-        addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
-        vm.label({ account: addr, newLabel: name });
-        vm.deal({ account: addr, newBalance: 100 ether });
-        /* deal({ token: address(dai), to: addr, give: 1_000_000e18 }); */
+    function boundedBytes(bytes32[FUZZ_CALL_MAX_DATA_LENGTH_IN_WORDS] calldata data_, uint256 boundedDataLength_)
+        internal
+        pure
+        returns (bytes memory boundedData)
+    {
+        boundedData = abi.encodePacked(data_);
+        assembly {
+            mstore(boundedData, boundedDataLength_)
+        }
     }
 }
 

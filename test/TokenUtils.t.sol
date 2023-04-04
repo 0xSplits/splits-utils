@@ -1,81 +1,105 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "forge-std/Test.sol";
+import {BaseTest, MockERC20} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
 import {TokenUtils} from "src/TokenUtils.sol";
-import {MockERC20} from "./mocks/MockERC20.sol";
 
-contract TokenUtilsTest is Test {
-    address internal constant ETH_ADDRESS = address(0);
-
-    address payable alice;
+contract TokenUtilsTest is BaseTest {
     TokenUtilsHarness public tokenUtils;
-    address public mERC20;
 
-    function setUp() public virtual {
-        alice = createUser("Alice");
-
-        mERC20 = address(new MockERC20("Test Token", "TOK", 6));
+    function setUp() public virtual override {
+        super.setUp();
 
         tokenUtils = new TokenUtilsHarness();
-        vm.deal({ account: address(tokenUtils), newBalance: 1 << 96 });
-        deal({ token: address(mERC20), to: address(tokenUtils), give: 1_000_000e18 });
+        deal({account: address(tokenUtils)});
     }
 
     /// -----------------------------------------------------------------------
     /// tests - basic
     /// -----------------------------------------------------------------------
 
-    function test_isETH_recognizesETH() public {
+    function test_isETH_ETH() public {
         assertTrue(tokenUtils.exposed_isETH(ETH_ADDRESS));
     }
 
-    function test_isETH_recognizesERC20() public {
-        assertFalse(tokenUtils.exposed_isETH(address(mERC20)));
+    function test_isETH_NonETH() public {
+        assertFalse(tokenUtils.exposed_isETH(address(mockERC20)));
     }
 
-    function test_decimals_recognizesETH() public {
+    function test_decimals_ETH() public {
         assertEq(tokenUtils.exposed_decimals(ETH_ADDRESS), 18);
     }
 
-    function test_decimals_recognizesNonETH() public {
-        vm.expectCall(mERC20, abi.encodeCall(MockERC20(mERC20).decimals, ()));
-        assertEq(tokenUtils.exposed_decimals(mERC20), 6);
+    function test_decimals_NonETH() public {
+        vm.expectCall(mockERC20, abi.encodeCall(MockERC20(mockERC20).decimals, ()));
+        assertEq(tokenUtils.exposed_decimals(mockERC20), ERC_DECIMALS);
     }
 
-    function test_balanceOf_recognizesETH() public {
-        assertEq(tokenUtils.exposed_balanceOf(ETH_ADDRESS, address(this)), address(this).balance);
+    function test_balanceOf_ETH() public {
+        assertEq(tokenUtils.exposed_balanceOf(ETH_ADDRESS, users.alice), users.alice.balance);
     }
 
-    function test_balanceOf_recognizesERC20() public {
-        assertEq(tokenUtils.exposed_balanceOf(address(mERC20), address(this)), MockERC20(mERC20).balanceOf(address(this)));
+    function test_balanceOf_NonETH() public {
+        assertEq(
+            tokenUtils.exposed_balanceOf(address(mockERC20), users.alice), MockERC20(mockERC20).balanceOf(users.alice)
+        );
     }
 
-    function test_safeTransfer_recognizesETH() public {
-        vm.expectCall(alice, 1 ether, "");
-        tokenUtils.exposed_safeTransfer(ETH_ADDRESS, alice, 1 ether);
+    function test_safeTransfer_ETH() public {
+        uint256 oldBalance = users.alice.balance;
+        vm.expectCall(users.alice, 1 ether, "");
+        tokenUtils.exposed_safeTransfer(ETH_ADDRESS, users.alice, 1 ether);
+        assertEq(oldBalance + 1 ether, users.alice.balance);
     }
 
-    function test_safeTransfer_recognizesERC20() public {
-        vm.expectCall(address(mERC20), 0, abi.encodeCall(MockERC20(mERC20).transfer, (alice, 1 ether)));
-        tokenUtils.exposed_safeTransfer(address(mERC20), alice, 1 ether);
+    function test_safeTransfer_NonETH() public {
+        uint256 oldBalance = MockERC20(mockERC20).balanceOf(users.alice);
+        vm.expectCall(address(mockERC20), 0, abi.encodeCall(MockERC20(mockERC20).transfer, (users.alice, 1)));
+        tokenUtils.exposed_safeTransfer(address(mockERC20), users.alice, 1);
+        assertEq(oldBalance + 1, MockERC20(mockERC20).balanceOf(users.alice));
     }
 
     /// -----------------------------------------------------------------------
-    /// internal
+    /// tests - fuzz
     /// -----------------------------------------------------------------------
 
-    // TODO: move into base contract ?
+    function testFuzz_decimals_NonETH(uint8 decimals_) public {
+        mockERC20 = address(new MockERC20("Test Token", "TOK", decimals_));
 
-    /// @dev Generates an address by hashing the name, labels the address and funds it with 100 ETH, 1 million DAI,
-    /// and 1 million USDC.
-    function createUser(string memory name) internal returns (address payable addr) {
-        addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
-        vm.label({ account: addr, newLabel: name });
-        vm.deal({ account: addr, newBalance: 100 ether });
-        /* deal({ token: address(dai), to: addr, give: 1_000_000e18 }); */
+        vm.expectCall(mockERC20, abi.encodeCall(MockERC20(mockERC20).decimals, ()));
+        assertEq(tokenUtils.exposed_decimals(mockERC20), decimals_);
+    }
+
+    function testFuzz_balanceOf_ETH(uint96 newBalance_) public {
+        vm.deal({account: users.alice, newBalance: newBalance_});
+        assertEq(tokenUtils.exposed_balanceOf(ETH_ADDRESS, users.alice), newBalance_);
+    }
+
+    function testFuzz_balanceOf_NonETH(uint256 newBalance_) public {
+        deal({token: address(mockERC20), to: users.alice, give: newBalance_});
+        assertEq(tokenUtils.exposed_balanceOf(address(mockERC20), users.alice), newBalance_);
+    }
+
+    function testFuzz_safeTransfer_ETH(uint96 amount_) public {
+        vm.deal({account: address(tokenUtils), newBalance: amount_});
+
+        uint256 oldBalance = users.alice.balance;
+        vm.expectCall(users.alice, amount_, "");
+        tokenUtils.exposed_safeTransfer(ETH_ADDRESS, users.alice, amount_);
+        assertEq(oldBalance + amount_, users.alice.balance);
+        assertEq(address(tokenUtils).balance, 0);
+    }
+
+    function testFuzz_safeTransfer_NonETH(uint96 amount_) public {
+        deal({token: address(mockERC20), to: address(tokenUtils), give: amount_});
+
+        uint256 oldBalance = MockERC20(mockERC20).balanceOf(users.alice);
+        vm.expectCall(address(mockERC20), 0, abi.encodeCall(MockERC20(mockERC20).transfer, (users.alice, amount_)));
+        tokenUtils.exposed_safeTransfer(address(mockERC20), users.alice, amount_);
+        assertEq(oldBalance + amount_, MockERC20(mockERC20).balanceOf(users.alice));
+        assertEq(MockERC20(mockERC20).balanceOf(address(tokenUtils)), 0);
     }
 }
 
@@ -85,12 +109,15 @@ contract TokenUtilsHarness {
     function exposed_isETH(address token_) external pure returns (bool) {
         return token_._isETH();
     }
+
     function exposed_decimals(address token_) external view returns (uint8) {
         return token_._decimals();
     }
+
     function exposed_balanceOf(address token_, address addr_) external view returns (uint256) {
         return token_._balanceOf(addr_);
     }
+
     function exposed_safeTransfer(address token_, address addr_, uint256 amount_) external {
         token_._safeTransfer(addr_, amount_);
     }

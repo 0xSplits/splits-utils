@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "forge-std/Test.sol";
+import {BaseTest} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
 import {OwnableImpl} from "src/OwnableImpl.sol";
 
-contract OwnableImplTest is Test {
+contract OwnableImplTest is BaseTest {
     using LibClone for address;
 
     OwnableImplHarness public ownableImpl;
@@ -16,7 +16,7 @@ contract OwnableImplTest is Test {
 
     event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
         ownableImpl = new OwnableImplHarness();
         ownable = OwnableImplHarness(address(ownableImpl).clone());
     }
@@ -43,7 +43,7 @@ contract OwnableImplTest is Test {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         ownable.exposed_initOwnable(address(this));
     }
@@ -67,7 +67,7 @@ contract OwnableImplTest is Test {
     function test_transferOwnership_emitsOwnershipTransferred() public callerOwner {
         ownable.exposed_initOwnable(address(this));
 
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(this), address(0));
         ownable.transferOwnership(address(0));
     }
@@ -86,7 +86,7 @@ contract OwnableImplTest is Test {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         ownable.exposed_initOwnable(owner_);
     }
@@ -119,7 +119,7 @@ contract OwnableImplTest is Test {
     {
         ownable.exposed_initOwnable(owner_);
 
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         vm.prank(owner_);
         emit OwnershipTransferred(owner_, newOwner_);
         ownable.transferOwnership(newOwner_);

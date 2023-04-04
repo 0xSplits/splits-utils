@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "forge-std/Test.sol";
+import {BaseTest} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
 import {PausableImpl} from "src/PausableImpl.sol";
 
-contract PausableImplTest is Test {
+contract PausableImplTest is BaseTest {
     using LibClone for address;
 
     PausableImplHarness public pausableImpl;
@@ -18,7 +18,7 @@ contract PausableImplTest is Test {
     event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
     event SetPaused(bool paused);
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
         pausableImpl = new PausableImplHarness();
         pausable = PausableImplHarness(address(pausableImpl).clone());
     }
@@ -45,7 +45,7 @@ contract PausableImplTest is Test {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         pausable.exposed_initPausable(address(this), true);
     }
@@ -74,7 +74,7 @@ contract PausableImplTest is Test {
     function test_setPaused_emitsSetPaused() public callerOwner {
         pausable.exposed_initPausable(address(this), false);
 
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit SetPaused(true);
         pausable.setPaused(true);
     }
@@ -93,7 +93,7 @@ contract PausableImplTest is Test {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_, bool paused_) public {
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         pausable.exposed_initPausable(owner_, paused_);
     }
@@ -128,7 +128,7 @@ contract PausableImplTest is Test {
     function testFuzz_setPaused_emitsSetPaused(address owner_, bool paused_) public callerOwner {
         pausable.exposed_initPausable(owner_, paused_);
 
-        vm.expectEmit(true, true, true, true);
+        expectEmit();
         vm.prank(owner_);
         emit SetPaused(paused_);
         pausable.setPaused(paused_);
