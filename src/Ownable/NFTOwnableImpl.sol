@@ -17,7 +17,7 @@ abstract contract NFTOwnableImpl is AbstractOwnable {
 
     constructor() {}
 
-    function __initOwnable(address owner_) internal override {}
+    function __initOwnable(address owner_) internal virtual override {}
 
     /// -----------------------------------------------------------------------
     /// functions - public & external - onlyOwner
