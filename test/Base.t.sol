@@ -61,12 +61,14 @@ abstract contract BaseTest is Test {
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 
-    function setUpFork() public virtual {
-        setUp();
+    // TODO: doesn't appear to work; maybe some kind of security blocker for libs
+    // trying to pull envs?
+    /* function setUpFork() public virtual { */
+    /*     setUp(); */
 
-        string memory MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL");
-        vm.createSelectFork(MAINNET_RPC_URL, BLOCK_NUMBER);
-    }
+    /*     string memory MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL"); */
+    /*     vm.createSelectFork(MAINNET_RPC_URL, BLOCK_NUMBER); */
+    /* } */
 
     /// -----------------------------------------------------------------------
     /// functions - private & internal
