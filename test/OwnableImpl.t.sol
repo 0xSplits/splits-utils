@@ -4,7 +4,7 @@ pragma solidity ^0.8.17;
 import {BaseTest} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
-import {OwnableImpl} from "src/OwnableImpl.sol";
+import {OwnableImpl} from "src/Ownable/OwnableImpl.sol";
 
 contract OwnableImplTest is BaseTest {
     using LibClone for address;
@@ -39,7 +39,7 @@ contract OwnableImplTest is BaseTest {
 
     function test_init_setsOwner() public {
         ownable.exposed_initOwnable(address(this));
-        assertEq(ownable.$owner(), address(this));
+        assertEq(ownable.owner(), address(this));
     }
 
     function test_init_emitsOwnershipTransferred() public {
@@ -61,7 +61,7 @@ contract OwnableImplTest is BaseTest {
         ownable.exposed_initOwnable(address(this));
 
         ownable.transferOwnership(address(0));
-        assertEq(ownable.$owner(), address(0));
+        assertEq(ownable.owner(), address(0));
     }
 
     function test_transferOwnership_emitsOwnershipTransferred() public callerOwner {
@@ -82,7 +82,7 @@ contract OwnableImplTest is BaseTest {
 
     function testFuzz_init_setsOwner(address owner_) public {
         ownable.exposed_initOwnable(owner_);
-        assertEq(ownable.$owner(), owner_);
+        assertEq(ownable.owner(), owner_);
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
@@ -110,7 +110,7 @@ contract OwnableImplTest is BaseTest {
 
         vm.prank(owner_);
         ownable.transferOwnership(newOwner_);
-        assertEq(ownable.$owner(), newOwner_);
+        assertEq(ownable.owner(), newOwner_);
     }
 
     function testFuzz_transferOwnership_emitsOwnershipTransferred(address owner_, address newOwner_)
