@@ -35,6 +35,7 @@ abstract contract BaseTest is Test {
     address internal constant ZERO_ADDRESS = address(0);
     address internal constant ETH_ADDRESS = address(0);
     uint8 internal constant ERC_DECIMALS = 24;
+    uint32 internal constant PERCENTAGE_SCALE = 100_00_00; // = 1e6 = 100%
 
     /// -----------------------------------------------------------------------
     /// storage - mutables
