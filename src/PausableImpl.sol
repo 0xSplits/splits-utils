@@ -24,7 +24,7 @@ abstract contract PausableImpl is AbstractOwnable {
     constructor() {}
 
     function __initPausable(address owner_, bool paused_) internal {
-        AbstractOwnable.__initOwnable(owner_);
+        __initOwnable(owner_);
         $paused = paused_;
     }
 
