@@ -32,6 +32,7 @@ abstract contract BaseTest is Test {
     /// storage - constants & immutables
     /// -----------------------------------------------------------------------
 
+    address internal constant ZERO_ADDRESS = address(0);
     address internal constant ETH_ADDRESS = address(0);
     uint8 internal constant ERC_DECIMALS = 24;
 
