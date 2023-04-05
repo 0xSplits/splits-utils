@@ -33,6 +33,9 @@ abstract contract BaseTest is Test {
     /// storage - constants & immutables
     /// -----------------------------------------------------------------------
 
+    uint256 constant BLOCK_NUMBER = 16984898; // 2023-04-05
+    ISplitMain constant SPLIT_MAIN = ISplitMain(0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE);
+
     address internal constant ZERO_ADDRESS = address(0);
     address internal constant ETH_ADDRESS = address(0);
     uint8 internal constant ERC_DECIMALS = 24;
@@ -57,6 +60,14 @@ abstract contract BaseTest is Test {
         mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
 
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
+    }
+
+    function setUpFork() public virtual {
+        setUp();
+        mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
+
+        string memory MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL");
+        vm.createSelectFork(MAINNET_RPC_URL, BLOCK_NUMBER);
     }
 
     /// -----------------------------------------------------------------------
