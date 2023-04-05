@@ -58,13 +58,11 @@ abstract contract BaseTest is Test {
 
     function setUp() public virtual {
         mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
-
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 
     function setUpFork() public virtual {
         setUp();
-        mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
 
         string memory MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL");
         vm.createSelectFork(MAINNET_RPC_URL, BLOCK_NUMBER);
