@@ -3,6 +3,7 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 
+import {ISplitMain} from "src/interfaces/ISplitMain.sol";
 import {MockERC20} from "test/mocks/MockERC20.sol";
 import {TokenUtils} from "src/TokenUtils.sol";
 
