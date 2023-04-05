@@ -45,7 +45,7 @@ contract PausableImplTest is BaseTest {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         pausable.exposed_initPausable(address(this), true);
     }
@@ -74,7 +74,7 @@ contract PausableImplTest is BaseTest {
     function test_setPaused_emitsSetPaused() public callerOwner {
         pausable.exposed_initPausable(address(this), false);
 
-        expectEmit();
+        _expectEmit();
         emit SetPaused(true);
         pausable.setPaused(true);
     }
@@ -93,7 +93,7 @@ contract PausableImplTest is BaseTest {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_, bool paused_) public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         pausable.exposed_initPausable(owner_, paused_);
     }
@@ -128,7 +128,7 @@ contract PausableImplTest is BaseTest {
     function testFuzz_setPaused_emitsSetPaused(address owner_, bool paused_) public callerOwner {
         pausable.exposed_initPausable(owner_, paused_);
 
-        expectEmit();
+        _expectEmit();
         vm.prank(owner_);
         emit SetPaused(paused_);
         pausable.setPaused(paused_);

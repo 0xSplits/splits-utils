@@ -13,7 +13,7 @@ contract TokenUtilsTest is BaseTest {
         super.setUp();
 
         tokenUtils = new TokenUtilsHarness();
-        deal({account: address(tokenUtils)});
+        _deal({account: address(tokenUtils)});
     }
 
     /// -----------------------------------------------------------------------

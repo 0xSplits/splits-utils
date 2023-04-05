@@ -42,7 +42,7 @@ contract WalletImplTest is BaseTest {
         walletImpl = new WalletImplHarness();
         wallet = WalletImplHarness(address(walletImpl).clone());
 
-        deal({account: address(wallet)});
+        _deal({account: address(wallet)});
         vm.deal({account: address(wallet), newBalance: 1 << 96});
     }
 
@@ -68,7 +68,7 @@ contract WalletImplTest is BaseTest {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         wallet.exposed_initWallet(address(this));
     }
@@ -97,7 +97,7 @@ contract WalletImplTest is BaseTest {
 
         WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
         calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
-        expectEmit();
+        _expectEmit();
         emit ExecCalls(calls);
         wallet.execCalls(calls);
     }
@@ -116,7 +116,7 @@ contract WalletImplTest is BaseTest {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         wallet.exposed_initWallet(owner_);
     }
@@ -152,7 +152,7 @@ contract WalletImplTest is BaseTest {
         wallet.exposed_initWallet(owner_);
 
         WalletImpl.Call[] memory calls = cleanFuzzCalls(params_);
-        expectEmit();
+        _expectEmit();
         emit ExecCalls(calls);
         vm.prank(owner_);
         wallet.execCalls(calls);

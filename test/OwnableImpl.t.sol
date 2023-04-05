@@ -43,7 +43,7 @@ contract OwnableImplTest is BaseTest {
     }
 
     function test_init_emitsOwnershipTransferred() public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), address(this));
         ownable.exposed_initOwnable(address(this));
     }
@@ -67,7 +67,7 @@ contract OwnableImplTest is BaseTest {
     function test_transferOwnership_emitsOwnershipTransferred() public callerOwner {
         ownable.exposed_initOwnable(address(this));
 
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(this), address(0));
         ownable.transferOwnership(address(0));
     }
@@ -86,7 +86,7 @@ contract OwnableImplTest is BaseTest {
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
-        expectEmit();
+        _expectEmit();
         emit OwnershipTransferred(address(0), owner_);
         ownable.exposed_initOwnable(owner_);
     }
@@ -119,7 +119,7 @@ contract OwnableImplTest is BaseTest {
     {
         ownable.exposed_initOwnable(owner_);
 
-        expectEmit();
+        _expectEmit();
         vm.prank(owner_);
         emit OwnershipTransferred(owner_, newOwner_);
         ownable.transferOwnership(newOwner_);

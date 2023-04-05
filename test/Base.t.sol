@@ -55,25 +55,25 @@ abstract contract BaseTest is Test {
     function setUp() public virtual {
         mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
 
-        users = Users({alice: createUser("Alice"), bob: createUser("Bob"), eve: createUser("Eve")});
+        users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 
     /// -----------------------------------------------------------------------
     /// functions - private & internal
     /// -----------------------------------------------------------------------
 
-    function expectEmit() internal {
+    function _expectEmit() internal {
         vm.expectEmit(true, true, true, true);
     }
 
     /// @dev Generates an address by hashing the name, labels the address and funds it with 1k ether & 1m TOK
-    function createUser(string memory name) internal returns (address payable addr) {
+    function _createUser(string memory name) internal returns (address payable addr) {
         addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
         vm.label({account: addr, newLabel: name});
-        deal({account: addr});
+        _deal({account: addr});
     }
 
-    function deal(address account) internal {
+    function _deal(address account) internal {
         vm.deal({account: account, newBalance: 1_000 ether});
         deal({token: address(mockERC20), to: account, give: 1_000_000 * (10 ** ERC_DECIMALS)});
     }
