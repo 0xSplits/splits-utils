@@ -7,4 +7,8 @@ contract MockERC721 is ERC721 {
     constructor(string memory _name, string memory _symbol) ERC721(_name, _symbol) {}
 
     function tokenURI(uint256) public pure virtual override returns (string memory) {}
+
+    function mint(address to, uint256 tokenId) external {
+        _mint(to, tokenId);
+    }
 }
