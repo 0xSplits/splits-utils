@@ -24,7 +24,15 @@ contract NFTOwnableImplTest is BaseTest {
         nftOwnable = NFTOwnableImplHarness(address(nftOwnableImpl).clone());
 
         testNFT = new TestERC721("Test ERC 721", "TEST");
-        nftOwnable.exposed_initNFTOwnable(address(testNFT));
+        nftOwnable.exposed_initNFTContract(address(testNFT));
+    }
+
+    /// -----------------------------------------------------------------------
+    /// tests - basic - init
+    /// -----------------------------------------------------------------------
+
+    function test_init_doesNothing() public {
+        nftOwnable.exposed_initOwnable(address(this));
     }
 
     /// -----------------------------------------------------------------------
@@ -41,6 +49,14 @@ contract NFTOwnableImplTest is BaseTest {
 
         vm.expectRevert(InvalidFunction.selector);
         nftOwnable.transferOwnership(address(this));
+    }
+
+    /// -----------------------------------------------------------------------
+    /// tests - fuzz - init
+    /// -----------------------------------------------------------------------
+
+    function testFuzz_init_doesNothing(address owner_) public {
+        nftOwnable.exposed_initOwnable(owner_);
     }
 
     /// -----------------------------------------------------------------------
@@ -69,7 +85,11 @@ contract NFTOwnableImplTest is BaseTest {
 contract NFTOwnableImplHarness is NFTOwnableImpl {
     address internal $nftContract;
 
-    function exposed_initNFTOwnable(address nftContract_) external {
+    function exposed_initOwnable(address owner_) external {
+        __initOwnable(owner_);
+    }
+
+    function exposed_initNFTContract(address nftContract_) external {
         $nftContract = nftContract_;
     }
 
