@@ -101,4 +101,19 @@ abstract contract BaseTest is Test {
             }
         }
     }
+
+    /// -----------------------------------------------------------------------
+    /// functions - private & internal - extended asserts
+    /// -----------------------------------------------------------------------
+
+    function assertEq(uint32[] memory a_, uint32[] memory b_) internal virtual {
+        uint256[] memory a;
+        uint256[] memory b;
+        /// @solidity memory-safe-assembly
+        assembly {
+            a := a_
+            b := b_
+        }
+        assertEq(a, b);
+    }
 }
