@@ -92,7 +92,7 @@ abstract contract BaseTest is Test {
         deal({token: address(mockERC20), to: account, give: 1_000_000 * (10 ** ERC_DECIMALS)});
     }
 
-    /// dumbest sort as reference for testing
+    /// dumb sort as testing reference
     function _sort(uint256[] memory arr) internal pure {
         uint256 length = arr.length;
         for (uint256 i; i < length; ++i) {
