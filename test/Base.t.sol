@@ -35,6 +35,9 @@ abstract contract BaseTest is Test {
 
     uint256 constant BLOCK_NUMBER = 16984898; // 2023-04-05
     ISplitMain constant SPLIT_MAIN = ISplitMain(0x2ed6c4B5dA6378c7897AC67Ba9e43102Feb694EE);
+    /* IUniswapV3Factory constant UNISWAP_V3_FACTORY = IUniswapV3Factory(0x1F98431c8aD98523631AE4a59f267346ea31F984); */
+    // ethereum WETH used by uniswap v3
+    address constant WETH9 = address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2);
 
     address internal constant ZERO_ADDRESS = address(0);
     address internal constant ETH_ADDRESS = address(0);
