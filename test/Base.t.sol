@@ -91,7 +91,7 @@ abstract contract BaseTest is Test {
     }
 
     /// dumbest sort as reference for testing
-    function _sort(uint256[] memory arr) internal {
+    function _sort(uint256[] memory arr) internal pure {
         uint256 length = arr.length;
         for (uint256 i; i < length; ++i) {
             for (uint256 j = i + 1; j < length; ++j) {
