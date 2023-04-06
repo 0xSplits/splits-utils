@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import {BaseTest, MockERC20} from "test/base.t.sol";
+import "./base.t.sol";
 
-import "src/Recipients.sol";
+import "../src/Recipients.sol";
 
 contract RecipientsTest is BaseTest {
     struct Recipient {

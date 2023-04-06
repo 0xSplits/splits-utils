@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import {BaseTest, MockERC20} from "test/base.t.sol";
+import "./base.t.sol";
 
-import {LibClone} from "src/LibClone.sol";
-import {TokenUtils} from "src/TokenUtils.sol";
+import {LibClone} from "../src/LibClone.sol";
+import {TokenUtils} from "../src/TokenUtils.sol";
 
 contract TokenUtilsTest is BaseTest {
     TokenUtilsHarness public tokenUtils;

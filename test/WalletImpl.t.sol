@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import {BaseTest} from "test/base.t.sol";
+import "./base.t.sol";
 
-import {LibClone} from "src/LibClone.sol";
-import {WalletImpl} from "src/WalletImpl.sol";
+import {LibClone} from "../src/LibClone.sol";
+import {WalletImpl} from "../src/WalletImpl.sol";
 
 contract WalletImplTest is BaseTest {
     using LibClone for address;

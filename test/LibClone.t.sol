@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "test/base.t.sol";
+import "./base.t.sol";
 
-import {LibClone} from "src/LibClone.sol";
+import {LibClone} from "../src/LibClone.sol";
 
 contract LibCloneTest is BaseTest {
     using LibClone for address;
