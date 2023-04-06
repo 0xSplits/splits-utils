@@ -127,4 +127,6 @@ interface ISplitMain {
     uint256 withdrawETH,
     address[] calldata tokens
   ) external;
+
+  function getHash(address split) external returns (bytes32);
 }
