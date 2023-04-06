@@ -128,5 +128,7 @@ interface ISplitMain {
     address[] calldata tokens
   ) external;
 
-  function getHash(address split) external returns (bytes32);
+  function getHash(address split) external view returns (bytes32);
+
+  function getController(address split) external view returns (address);
 }
