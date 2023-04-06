@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import {OwnableImpl} from "src/OwnableImpl.sol";
+import {AbstractOwnable} from "src/Ownable/AbstractOwnable.sol";
 
 // TODO: open q: add exec via sig ?
 
 /// @title WalletImpl
 /// @author 0xSplits
 /// @notice Minimal smart wallet clone-implementation
-abstract contract WalletImpl is OwnableImpl {
+abstract contract WalletImpl is AbstractOwnable {
     struct Call {
         address to;
         uint256 value;
@@ -34,7 +34,7 @@ abstract contract WalletImpl is OwnableImpl {
     constructor() {}
 
     function __initWallet(address owner_) internal {
-        OwnableImpl.__initOwnable(owner_);
+        __initOwnable(owner_);
     }
 
     /// -----------------------------------------------------------------------

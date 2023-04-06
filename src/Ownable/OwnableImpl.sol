@@ -1,21 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
+import {AbstractOwnable} from "src/Ownable/AbstractOwnable.sol";
+
 /// @title OwnableImpl
 /// @author 0xSplits
-/// @notice Ownable clone-implementation
-abstract contract OwnableImpl {
-    error Unauthorized();
-
-    event OwnershipTransferred(address indexed oldOwner, address indexed newOwner);
-
+/// @notice Bare bones ownable contract
+abstract contract OwnableImpl is AbstractOwnable {
     /// -----------------------------------------------------------------------
     /// storage - mutables
     /// -----------------------------------------------------------------------
 
     /// slot 0 - 12 bytes free
 
-    address public $owner;
+    address internal $owner;
     /// 20 bytes
 
     /// -----------------------------------------------------------------------
@@ -24,26 +22,19 @@ abstract contract OwnableImpl {
 
     constructor() {}
 
-    function __initOwnable(address owner_) internal virtual {
-        emit OwnershipTransferred(address(0), owner_);
-        $owner = owner_;
-    }
-
-    /// -----------------------------------------------------------------------
-    /// modifiers
-    /// -----------------------------------------------------------------------
-
-    modifier onlyOwner() virtual {
-        if (msg.sender != $owner) revert Unauthorized();
-        _;
-    }
-
     /// -----------------------------------------------------------------------
     /// functions - public & external - onlyOwner
     /// -----------------------------------------------------------------------
 
-    function transferOwnership(address owner_) public virtual onlyOwner {
-        $owner = owner_;
-        emit OwnershipTransferred(msg.sender, owner_);
+    function owner() public virtual override returns (address) {
+        return $owner;
+    }
+
+    /// -----------------------------------------------------------------------
+    /// functions - private & internal
+    /// -----------------------------------------------------------------------
+
+    function _setOwner(address newOwner_) internal virtual override {
+        $owner = newOwner_;
     }
 }

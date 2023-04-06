@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import {BaseTest} from "test/base.t.sol";
 
 import {LibClone} from "src/LibClone.sol";
+import {OwnableImpl} from "src/Ownable/OwnableImpl.sol";
 import {PausableImpl} from "src/PausableImpl.sol";
 
 contract PausableImplTest is BaseTest {
@@ -41,7 +42,7 @@ contract PausableImplTest is BaseTest {
 
     function test_init_setsOwner() public {
         pausable.exposed_initPausable(address(this), true);
-        assertEq(pausable.$owner(), address(this));
+        assertEq(pausable.owner(), address(this));
     }
 
     function test_init_emitsOwnershipTransferred() public {
@@ -89,7 +90,7 @@ contract PausableImplTest is BaseTest {
 
     function testFuzz_init_setsOwner(address owner_, bool paused_) public {
         pausable.exposed_initPausable(owner_, paused_);
-        assertEq(pausable.$owner(), owner_);
+        assertEq(pausable.owner(), owner_);
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_, bool paused_) public {
@@ -135,7 +136,7 @@ contract PausableImplTest is BaseTest {
     }
 }
 
-contract PausableImplHarness is PausableImpl {
+contract PausableImplHarness is OwnableImpl, PausableImpl {
     function exposed_initPausable(address owner_, bool paused_) external {
         __initPausable(owner_, paused_);
     }
