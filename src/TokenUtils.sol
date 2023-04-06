@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import {ERC20} from "solmate/tokens/ERC20.sol";
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
 library TokenUtils {
@@ -25,4 +24,9 @@ library TokenUtils {
         if (_isETH(token)) addr.safeTransferETH(amount);
         else token.safeTransfer(addr, amount);
     }
+}
+
+interface ERC20 {
+    function decimals() external view returns (uint8);
+    function balanceOf(address addr) external view returns (uint256);
 }
