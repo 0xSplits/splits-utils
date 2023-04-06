@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 
 import {MockERC20} from "test/mocks/MockERC20.sol";
+import {MockERC721} from "test/mocks/MockERC721.sol";
 import {TokenUtils} from "src/TokenUtils.sol";
 
 /// @dev base inspired by PaulRBerg
@@ -49,6 +50,7 @@ abstract contract BaseTest is Test {
 
     Users public users;
     address public mockERC20;
+    address public mockERC721;
 
     /// -----------------------------------------------------------------------
     /// functions
@@ -60,6 +62,7 @@ abstract contract BaseTest is Test {
 
     function setUp() public virtual {
         mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
+        mockERC721 = address(new MockERC721("Test NFT", "TEST"));
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 

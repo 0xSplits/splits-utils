@@ -12,19 +12,21 @@ import {BaseTest} from "test/base.t.sol";
 contract NFTOwnableImplTest is BaseTest {
     using LibClone for address;
 
+    uint256 constant TOKEN_ID = 0;
+
     NFTOwnableImplHarness public nftOwnableImpl;
     NFTOwnableImplHarness public nftOwnable;
-    TestERC721 public testNFT;
 
     error Unauthorized();
     error InvalidFunction();
 
     function setUp() public virtual override {
+        super.setUp();
+
         nftOwnableImpl = new NFTOwnableImplHarness();
         nftOwnable = NFTOwnableImplHarness(address(nftOwnableImpl).clone());
 
-        testNFT = new TestERC721("Test ERC 721", "TEST");
-        nftOwnable.exposed_initNFTContract(address(testNFT));
+        nftOwnable.exposed_initNFTContract(mockERC721, TOKEN_ID);
     }
 
     /// -----------------------------------------------------------------------
@@ -40,12 +42,15 @@ contract NFTOwnableImplTest is BaseTest {
     /// -----------------------------------------------------------------------
 
     function test_RevertWhen_CallerNotOwner_transferOwnership() public {
+        address nftOwner = makeAddr("nftOwner");
+        MockERC721(mockERC721).mint(nftOwner, TOKEN_ID);
+
         vm.expectRevert(Unauthorized.selector);
         nftOwnable.transferOwnership(address(this));
     }
 
     function test_RevertWhen_CallerIsOwner_transferOwnership() public {
-        testNFT.exposed_setOwner(address(this));
+        MockERC721(mockERC721).mint(address(this), TOKEN_ID);
 
         vm.expectRevert(InvalidFunction.selector);
         nftOwnable.transferOwnership(address(this));
@@ -65,53 +70,45 @@ contract NFTOwnableImplTest is BaseTest {
 
     function testFuzz_RevertWhen_CallerNotOwner_transferOwnership(address owner_, address prankOwner_) public {
         vm.assume(owner_ != prankOwner_);
+        vm.assume(owner_ != address(0));
+
+        MockERC721(mockERC721).mint(owner_, TOKEN_ID);
 
         vm.prank(prankOwner_);
         vm.expectRevert(Unauthorized.selector);
         nftOwnable.transferOwnership(prankOwner_);
     }
 
-    function testFuzz_RevertWhen_CallerIsOwner_transferOwnership(address owner_, address prankOwner_) public {
-        vm.assume(owner_ != prankOwner_);
+    function testFuzz_RevertWhen_CallerIsOwner_transferOwnership(address owner_, address receiver_) public {
+        vm.assume(owner_ != receiver_);
+        vm.assume(owner_ != address(0));
 
-        testNFT.exposed_setOwner(owner_);
+        MockERC721(mockERC721).mint(owner_, TOKEN_ID);
 
         vm.prank(owner_);
         vm.expectRevert(InvalidFunction.selector);
-        nftOwnable.transferOwnership(prankOwner_);
+        nftOwnable.transferOwnership(receiver_);
     }
 }
 
 contract NFTOwnableImplHarness is NFTOwnableImpl {
     address internal $nftContract;
+    uint256 internal $tokenId;
 
     function exposed_initOwnable(address owner_) external {
         __initOwnable(owner_);
     }
 
-    function exposed_initNFTContract(address nftContract_) external {
+    function exposed_initNFTContract(address nftContract_, uint256 tokenId_) external {
         $nftContract = nftContract_;
+        $tokenId = tokenId_;
     }
 
     function nftContract() public view override returns (ERC721) {
         return ERC721($nftContract);
     }
 
-    function tokenId() public pure override returns (uint256) {
-        return 0;
-    }
-}
-
-contract TestERC721 is MockERC721 {
-    address internal $owner;
-
-    constructor(string memory _name, string memory _symbol) MockERC721(_name, _symbol) {}
-
-    function exposed_setOwner(address owner_) public {
-        $owner = owner_;
-    }
-
-    function ownerOf(uint256) public view override returns (address owner) {
-        owner = $owner;
+    function tokenId() public view override returns (uint256) {
+        return $tokenId;
     }
 }
