@@ -75,7 +75,7 @@ abstract contract BaseTest is Test {
     /// -----------------------------------------------------------------------
 
     function _expectEmit() internal {
-        vm.expectEmit(true, true, true, true);
+        vm.expectEmit({checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true});
     }
 
     /// @dev Generates an address by hashing the name, labels the address and funds it with 1k ether & 1m TOK
