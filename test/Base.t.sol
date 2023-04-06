@@ -89,4 +89,14 @@ abstract contract BaseTest is Test {
         vm.deal({account: account, newBalance: 1_000 ether});
         deal({token: address(mockERC20), to: account, give: 1_000_000 * (10 ** ERC_DECIMALS)});
     }
+
+    /// dumbest sort as reference for testing
+    function _sort(uint256[] memory arr) internal {
+        uint256 length = arr.length;
+        for (uint256 i; i < length; ++i) {
+            for (uint256 j = i + 1; j < length; ++j) {
+                if (arr[i] > arr[j]) (arr[i], arr[j]) = (arr[j], arr[i]);
+            }
+        }
+    }
 }
