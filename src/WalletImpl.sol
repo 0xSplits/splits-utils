@@ -34,7 +34,7 @@ abstract contract WalletImpl is AbstractOwnable {
     constructor() {}
 
     function __initWallet(address owner_) internal {
-        AbstractOwnable.__initOwnable(owner_);
+        __initOwnable(owner_);
     }
 
     /// -----------------------------------------------------------------------
