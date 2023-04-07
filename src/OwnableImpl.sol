@@ -51,7 +51,7 @@ abstract contract OwnableImpl {
     /// functions - public & external - view
     /// -----------------------------------------------------------------------
 
-    function owner() public virtual returns (address) {
+    function owner() public view virtual returns (address) {
         return $owner;
     }
 }

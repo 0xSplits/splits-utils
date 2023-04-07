@@ -57,7 +57,7 @@ abstract contract PausableImpl is OwnableImpl {
     /// functions - public & external - view
     /// -----------------------------------------------------------------------
 
-    function paused() public virtual returns (bool) {
+    function paused() public view virtual returns (bool) {
         return $paused;
     }
 }
