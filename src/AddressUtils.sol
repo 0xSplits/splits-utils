@@ -2,10 +2,9 @@
 pragma solidity ^0.8.17;
 
 // TODO: add natspec?
+address constant ADDRESS_ZERO = address(0);
 
 library AddressUtils {
-    address internal constant ADDRESS_ZERO = address(0);
-
     function _isEmpty(address addr) internal pure returns (bool) {
         return (addr == ADDRESS_ZERO);
     }
