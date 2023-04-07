@@ -3,6 +3,7 @@ pragma solidity ^0.8.17;
 
 import "forge-std/Test.sol";
 
+import {AddressUtils} from "../src/AddressUtils.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
 import {TokenUtils} from "../src/TokenUtils.sol";
 
@@ -38,7 +39,6 @@ abstract contract BaseTest is Test {
     // ethereum WETH used by uniswap v3
     address constant WETH9 = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    address internal constant ADDRESS_ZERO = address(0);
     address internal constant ETH_ADDRESS = address(0);
     uint8 internal constant ERC_DECIMALS = 24;
     uint32 internal constant PERCENTAGE_SCALE = 100_00_00; // = 1e6 = 100%
