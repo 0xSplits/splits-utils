@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 
 import {OwnableImpl} from "./OwnableImpl.sol";
 
-/// @title PausableImpl
+/// @title Pausable Implementation
 /// @author 0xSplits
 /// @notice Pausable clone-implementation
 abstract contract PausableImpl is OwnableImpl {

@@ -5,7 +5,7 @@ import {OwnableImpl} from "./OwnableImpl.sol";
 
 // TODO: open q: add exec via sig ?
 
-/// @title WalletImpl
+/// @title Wallet Implementation
 /// @author 0xSplits
 /// @notice Minimal smart wallet clone-implementation
 abstract contract WalletImpl is OwnableImpl {

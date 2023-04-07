@@ -3,6 +3,8 @@ pragma solidity ^0.8.17;
 
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
+// TODO: add natspec?
+
 library TokenUtils {
     using SafeTransferLib for address;
 
