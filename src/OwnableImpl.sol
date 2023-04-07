@@ -15,7 +15,7 @@ abstract contract OwnableImpl {
 
     /// slot 0 - 12 bytes free
 
-    address public $owner;
+    address internal $owner;
     /// 20 bytes
 
     /// -----------------------------------------------------------------------
@@ -34,7 +34,7 @@ abstract contract OwnableImpl {
     /// -----------------------------------------------------------------------
 
     modifier onlyOwner() virtual {
-        if (msg.sender != $owner) revert Unauthorized();
+        if (msg.sender != owner()) revert Unauthorized();
         _;
     }
 
@@ -45,5 +45,13 @@ abstract contract OwnableImpl {
     function transferOwnership(address owner_) public virtual onlyOwner {
         $owner = owner_;
         emit OwnershipTransferred(msg.sender, owner_);
+    }
+
+    /// -----------------------------------------------------------------------
+    /// functions - public & external - view
+    /// -----------------------------------------------------------------------
+
+    function owner() public virtual returns (address) {
+        return $owner;
     }
 }

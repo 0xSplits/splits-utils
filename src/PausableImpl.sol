@@ -21,7 +21,7 @@ abstract contract PausableImpl is OwnableImpl {
     /// address public $owner;
     /// 20 bytes
 
-    bool public $paused;
+    bool internal $paused;
     /// 1 byte
 
     /// -----------------------------------------------------------------------
@@ -30,7 +30,7 @@ abstract contract PausableImpl is OwnableImpl {
 
     constructor() {}
 
-    function __initPausable(address owner_, bool paused_) internal {
+    function __initPausable(address owner_, bool paused_) internal virtual {
         OwnableImpl.__initOwnable(owner_);
         $paused = paused_;
     }
@@ -39,9 +39,8 @@ abstract contract PausableImpl is OwnableImpl {
     /// modifiers
     /// -----------------------------------------------------------------------
 
-    /// makes function pausable
-    modifier pausable() {
-        if ($paused) revert Paused();
+    modifier pausable() virtual {
+        if (paused()) revert Paused();
         _;
     }
 
@@ -49,9 +48,16 @@ abstract contract PausableImpl is OwnableImpl {
     /// functions - public & external - onlyOwner
     /// -----------------------------------------------------------------------
 
-    /// set paused
-    function setPaused(bool paused_) external onlyOwner {
+    function setPaused(bool paused_) public virtual onlyOwner {
         $paused = paused_;
         emit SetPaused(paused_);
+    }
+
+    /// -----------------------------------------------------------------------
+    /// functions - public & external - view
+    /// -----------------------------------------------------------------------
+
+    function paused() public virtual returns (bool) {
+        return $paused;
     }
 }

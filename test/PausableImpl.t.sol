@@ -41,7 +41,7 @@ contract PausableImplTest is BaseTest {
 
     function test_init_setsOwner() public {
         pausable.exposed_initPausable(address(this), true);
-        assertEq(pausable.$owner(), address(this));
+        assertEq(pausable.owner(), address(this));
     }
 
     function test_init_emitsOwnershipTransferred() public {
@@ -52,7 +52,7 @@ contract PausableImplTest is BaseTest {
 
     function test_init_setsPaused() public {
         pausable.exposed_initPausable(address(this), true);
-        assertEq(pausable.$paused(), true);
+        assertEq(pausable.paused(), true);
     }
 
     /// -----------------------------------------------------------------------
@@ -68,7 +68,7 @@ contract PausableImplTest is BaseTest {
         pausable.exposed_initPausable(address(this), true);
 
         pausable.setPaused(false);
-        assertEq(pausable.$paused(), false);
+        assertEq(pausable.paused(), false);
     }
 
     function test_setPaused_emitsSetPaused() public callerOwner {
@@ -89,7 +89,7 @@ contract PausableImplTest is BaseTest {
 
     function testFuzz_init_setsOwner(address owner_, bool paused_) public {
         pausable.exposed_initPausable(owner_, paused_);
-        assertEq(pausable.$owner(), owner_);
+        assertEq(pausable.owner(), owner_);
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_, bool paused_) public {
@@ -100,7 +100,7 @@ contract PausableImplTest is BaseTest {
 
     function testFuzz_init_setsPaused(address owner_, bool paused_) public {
         pausable.exposed_initPausable(owner_, paused_);
-        assertEq(pausable.$paused(), paused_);
+        assertEq(pausable.paused(), paused_);
     }
 
     /// -----------------------------------------------------------------------
@@ -122,7 +122,7 @@ contract PausableImplTest is BaseTest {
 
         vm.prank(owner_);
         pausable.setPaused(paused_);
-        assertEq(pausable.$paused(), paused_);
+        assertEq(pausable.paused(), paused_);
     }
 
     function testFuzz_setPaused_emitsSetPaused(address owner_, bool paused_) public callerOwner {

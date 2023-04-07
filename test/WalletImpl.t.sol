@@ -64,7 +64,7 @@ contract WalletImplTest is BaseTest {
 
     function test_init_setsOwner() public {
         wallet.exposed_initWallet(address(this));
-        assertEq(wallet.$owner(), address(this));
+        assertEq(wallet.owner(), address(this));
     }
 
     function test_init_emitsOwnershipTransferred() public {
@@ -112,7 +112,7 @@ contract WalletImplTest is BaseTest {
 
     function testFuzz_init_setsOwner(address owner_) public {
         wallet.exposed_initWallet(owner_);
-        assertEq(wallet.$owner(), owner_);
+        assertEq(wallet.owner(), owner_);
     }
 
     function testFuzz_init_emitsOwnershipTransferred(address owner_) public {
