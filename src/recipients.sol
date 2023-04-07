@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-// TODO: what should this be named? LibSplits?
+// TODO: what should this be named? LibSplits? LibRecipients?
 
 import {LibSort} from "solady/utils/LibSort.sol";
 
