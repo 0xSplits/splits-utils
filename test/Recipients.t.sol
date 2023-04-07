@@ -25,7 +25,8 @@ contract RecipientsTest is BaseTest {
         (packSortAccounts, packSortPercentAllocations) = _sortRecipients(packSortAccounts, packSortPercentAllocations);
 
         // struct sort
-        (address[] memory structSortAccounts, uint32[] memory structSortPercentAllocations) = _unzipStruct(_sortStruct(recipients_));
+        (address[] memory structSortAccounts, uint32[] memory structSortPercentAllocations) =
+            _unzipStruct(_sortStruct(recipients_));
 
         assertEq(packSortAccounts, structSortAccounts);
         assertEq(packSortPercentAllocations, structSortPercentAllocations);
@@ -40,16 +41,24 @@ contract RecipientsTest is BaseTest {
         uint256 length = recipients_.length;
         for (uint256 i; i < length; i++) {
             for (uint256 j = i + 1; j < length; j++) {
-                if (recipients_[i].account > recipients_[j].account)
+                if (recipients_[i].account > recipients_[j].account) {
                     (recipients_[i], recipients_[j]) = (recipients_[j], recipients_[i]);
-                else if (recipients_[i].account == recipients_[j].account && recipients_[i].percentAllocation > recipients_[j].percentAllocation)
+                } else if (
+                    recipients_[i].account == recipients_[j].account
+                        && recipients_[i].percentAllocation > recipients_[j].percentAllocation
+                ) {
                     (recipients_[i], recipients_[j]) = (recipients_[j], recipients_[i]);
+                }
             }
         }
         return recipients_;
     }
 
-    function _unzipStruct(Recipient[] memory recipients_) internal pure returns (address[] memory accounts, uint32[] memory percentAllocations) {
+    function _unzipStruct(Recipient[] memory recipients_)
+        internal
+        pure
+        returns (address[] memory accounts, uint32[] memory percentAllocations)
+    {
         uint256 length = recipients_.length;
         accounts = new address[](length);
         percentAllocations = new uint32[](length);

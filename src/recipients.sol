@@ -11,19 +11,26 @@ error InvalidRecipients_ArrayLengthMismatch();
 
 uint256 constant UINT96_BITS = 96;
 
-function _sortRecipients(address[] memory accounts_, uint32[] memory percentAllocations_) pure returns (address[] memory, uint32[] memory) {
+function _sortRecipients(address[] memory accounts_, uint32[] memory percentAllocations_)
+    pure
+    returns (address[] memory, uint32[] memory)
+{
     PackedRecipient[] memory packedRecipients = _packRecipients(accounts_, percentAllocations_);
-    _sort( packedRecipients );
+    _sort(packedRecipients);
     return _unpack(packedRecipients);
 }
 
-function _packRecipients(address[] memory accounts_, uint32[] memory percentAllocations_) pure returns (PackedRecipient[] memory packedRecipients) {
+function _packRecipients(address[] memory accounts_, uint32[] memory percentAllocations_)
+    pure
+    returns (PackedRecipient[] memory packedRecipients)
+{
     if (accounts_.length != percentAllocations_.length) revert InvalidRecipients_ArrayLengthMismatch();
 
     uint256 length = accounts_.length;
     packedRecipients = new PackedRecipient[](length);
     for (uint256 i; i < length;) {
-        packedRecipients[i] = PackedRecipient.wrap((uint256(uint160(accounts_[i])) << UINT96_BITS) | percentAllocations_[i]);
+        packedRecipients[i] =
+            PackedRecipient.wrap((uint256(uint160(accounts_[i])) << UINT96_BITS) | percentAllocations_[i]);
 
         unchecked {
             ++i;
@@ -41,7 +48,10 @@ function _sort(PackedRecipient[] memory packedRecipients_) pure {
     uintPackedRecipients.sort();
 }
 
-function _unpack(PackedRecipient[] memory packedRecipients_) pure returns  (address[] memory accounts, uint32[] memory percentAllocations) {
+function _unpack(PackedRecipient[] memory packedRecipients_)
+    pure
+    returns (address[] memory accounts, uint32[] memory percentAllocations)
+{
     uint256 length = packedRecipients_.length;
     accounts = new address[](length);
     percentAllocations = new uint32[](length);
@@ -54,7 +64,7 @@ function _unpack(PackedRecipient[] memory packedRecipients_) pure returns  (addr
     }
 }
 
-function _unpack(PackedRecipient packedRecipient_) pure returns  (address account, uint32 percentAllocation) {
+function _unpack(PackedRecipient packedRecipient_) pure returns (address account, uint32 percentAllocation) {
     uint256 packedRecipient = PackedRecipient.unwrap(packedRecipient_);
     percentAllocation = uint32(packedRecipient);
     account = address(uint160(packedRecipient >> UINT96_BITS));
