@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-// TODO: add natspec?
 address constant ADDRESS_ZERO = address(0);
 
 library AddressUtils {
