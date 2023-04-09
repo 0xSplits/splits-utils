@@ -102,21 +102,37 @@ abstract contract BaseTest is Test {
         }
     }
 
-    function _predictNextAddressFrom(address deployer_) internal view returns (address) {
+    function _predictNextAddressesFrom(address deployer_, uint256 num)
+        internal
+        view
+        returns (address[] memory nextAddresses)
+    {
+        nextAddresses = new address[](num);
         uint64 nonce = vm.getNonce(deployer_);
+        for (uint256 i; i < num; i++) {
+            nextAddresses[i] = _predictNextAddressFrom(deployer_, nonce);
+            nonce++;
+        }
+    }
+
+    function _predictNextAddressFrom(address deployer_) internal view returns (address) {
+        return _predictNextAddressFrom(deployer_, vm.getNonce(deployer_));
+    }
+
+    function _predictNextAddressFrom(address deployer_, uint64 nonce_) internal pure returns (address) {
         bytes memory data;
-        if (nonce == 0x00) {
+        if (nonce_ == 0x00) {
             data = abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer_, bytes1(0x80));
-        } else if (nonce <= 0x7f) {
-            data = abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer_, uint8(nonce));
-        } else if (nonce <= 0xff) {
-            data = abi.encodePacked(bytes1(0xd7), bytes1(0x94), deployer_, bytes1(0x81), uint8(nonce));
-        } else if (nonce <= 0xffff) {
-            data = abi.encodePacked(bytes1(0xd8), bytes1(0x94), deployer_, bytes1(0x82), uint16(nonce));
-        } else if (nonce <= 0xffffff) {
-            data = abi.encodePacked(bytes1(0xd9), bytes1(0x94), deployer_, bytes1(0x83), uint24(nonce));
+        } else if (nonce_ <= 0x7f) {
+            data = abi.encodePacked(bytes1(0xd6), bytes1(0x94), deployer_, uint8(nonce_));
+        } else if (nonce_ <= 0xff) {
+            data = abi.encodePacked(bytes1(0xd7), bytes1(0x94), deployer_, bytes1(0x81), uint8(nonce_));
+        } else if (nonce_ <= 0xffff) {
+            data = abi.encodePacked(bytes1(0xd8), bytes1(0x94), deployer_, bytes1(0x82), uint16(nonce_));
+        } else if (nonce_ <= 0xffffff) {
+            data = abi.encodePacked(bytes1(0xd9), bytes1(0x94), deployer_, bytes1(0x83), uint24(nonce_));
         } else {
-            data = abi.encodePacked(bytes1(0xda), bytes1(0x94), deployer_, bytes1(0x84), uint32(nonce));
+            data = abi.encodePacked(bytes1(0xda), bytes1(0x94), deployer_, bytes1(0x84), uint32(nonce_));
         }
         return address(uint160(uint256(keccak256(data))));
     }
