@@ -186,7 +186,7 @@ contract WalletImplTest is BaseTest {
         returns (bytes memory boundedData)
     {
         boundedData = abi.encodePacked(data_);
-        assembly {
+        assembly ("memory-safe") {
             mstore(boundedData, boundedDataLength_)
         }
     }

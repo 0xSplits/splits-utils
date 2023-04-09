@@ -16,8 +16,7 @@ library LibClone {
 
     /// @dev Deploys a modified minimal proxy of `implementation`
     function clone(address implementation) internal returns (address instance) {
-        /// @solidity memory-safe-assembly
-        assembly {
+        assembly ("memory-safe") {
             /**
              * --------------------------------------------------------------------------+
              * CREATION (9 bytes - 0x09)                                                 |
