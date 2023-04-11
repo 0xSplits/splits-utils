@@ -11,7 +11,7 @@ contract LibRecipientsTest is BaseTest {
         uint32 percentAllocation;
     }
 
-        LibRecipientsHarness libRecipientsHarness;
+    LibRecipientsHarness libRecipientsHarness;
 
     function setUp() public virtual override {
         super.setUp();
@@ -55,7 +55,8 @@ contract LibRecipientsTest is BaseTest {
     function testFuzz_sortRecipients(Recipient[] memory recipients_) public {
         // pack sort
         (address[] memory accounts, uint32[] memory percentAllocations) = _unzipStruct(recipients_);
-        (address[] memory packSortAccounts, uint32[] memory packSortPercentAllocations) = libRecipientsHarness.exposed_sortRecipients(accounts, percentAllocations);
+        (address[] memory packSortAccounts, uint32[] memory packSortPercentAllocations) =
+            libRecipientsHarness.exposed_sortRecipients(accounts, percentAllocations);
 
         // struct sort
         (address[] memory structSortAccounts, uint32[] memory structSortPercentAllocations) =
