@@ -82,6 +82,11 @@ abstract contract BaseTest is Test {
         vm.expectEmit({checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true});
     }
 
+    function _changePrank(address prank_) internal {
+        vm.stopPrank();
+        vm.startPrank(prank_);
+    }
+
     /// @dev Generates an address by hashing the name, labels the address and funds it with 1k ether & 1m TOK
     function _createUser(string memory name) internal returns (address payable addr) {
         addr = payable(address(uint160(uint256(keccak256(abi.encodePacked(name))))));
