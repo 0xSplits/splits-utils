@@ -3,8 +3,7 @@ pragma solidity ^0.8.17;
 
 import {SafeTransferLib} from "solady/utils/SafeTransferLib.sol";
 
-// TODO: add natspec?
-
+/// Library to handle basic token functions for ERC20s & ETH (represented by 0x0)
 library TokenUtils {
     using SafeTransferLib for address;
 

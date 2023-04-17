@@ -5,6 +5,7 @@ import {LibSort} from "solady/utils/LibSort.sol";
 
 type PackedRecipient is uint256;
 
+// Library for efficiently sorting splits' recipients onchain
 library LibRecipients {
     using LibSort for uint256[];
 

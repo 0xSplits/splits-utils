@@ -65,8 +65,7 @@ abstract contract BaseTest is Test {
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 
-    // TODO: doesn't appear to work; maybe some kind of security blocker for libs
-    // trying to pull envs?
+    // doesn't appear to work; maybe security blocker for libs pulling envs?
     /* function setUpFork() public virtual { */
     /*     setUp(); */
 

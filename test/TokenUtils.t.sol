@@ -3,7 +3,6 @@ pragma solidity ^0.8.17;
 
 import "./base.t.sol";
 
-import {LibClone} from "../src/LibClone.sol";
 import {TokenUtils} from "../src/TokenUtils.sol";
 
 contract TokenUtilsTest is BaseTest {
