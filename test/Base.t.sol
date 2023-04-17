@@ -4,6 +4,7 @@ pragma solidity ^0.8.17;
 import "forge-std/Test.sol";
 
 import {AddressUtils, ADDRESS_ZERO} from "../src/AddressUtils.sol";
+import {IWETH9} from "../src/interfaces/external/IWETH9.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
 import {TokenUtils} from "../src/TokenUtils.sol";
 
