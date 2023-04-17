@@ -56,6 +56,7 @@ abstract contract LibCloneBase is BaseTest {
     }
 
     function test_clone_canDelegateCall() public {
+        // don't expect call to necessarily succeed, just to happen
         vm.expectCall(impl, data);
         clone.call(data);
     }
