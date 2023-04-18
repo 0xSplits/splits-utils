@@ -36,6 +36,7 @@ contract Uninitialized_OwnableImplTest is Uninitialized_OwnableImplBase {
     /// -----------------------------------------------------------------------
 
     function testFuzz_RevertWhen_CallerNotOwner_transferOwnership(address owner_, address notOwner_) public callerNotOwner(notOwner_) {
+        vm.assume(owner_ != notOwner_);
         $owner = owner_;
         _initialize();
 
