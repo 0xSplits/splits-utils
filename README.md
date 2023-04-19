@@ -14,8 +14,10 @@ To ease external integrations and re-use frequent development / testing patterns
 
 ## Setup & test
 
-`forge install` - compile the contracts
+`forge i` - install dependencies
 
-`forge test` - compile & test the contracts
+`forge b` - compile the contracts
+
+`forge t` - compile & test the contracts
 
 `forge t -vvv` - produce traces for any failing tests
