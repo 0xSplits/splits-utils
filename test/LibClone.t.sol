@@ -63,10 +63,6 @@ abstract contract LibCloneBase is BaseTest {
 }
 
 contract LibCloneTest is LibCloneBase {
-    function setUp() public override {
-        super.setUp();
-    }
-
     function testFuzz_clone_code(address impl_) public {
         _setUpImpl(impl_);
 
