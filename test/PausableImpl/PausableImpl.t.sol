@@ -1,0 +1,93 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.17;
+
+import "../base.t.sol";
+
+import {
+    Initialized_OwnableImplBase,
+    Initialized_OwnableImplTest,
+    Uninitialized_OwnableImplBase,
+    Uninitialized_OwnableImplTest
+} from "../OwnableImpl/OwnableImpl.t.sol";
+import {
+    Initialized_PausableImplBase,
+    PausableImplHarness,
+    Uninitialized_PausableImplBase
+} from "./PausableImplStateTree.sol";
+
+contract Uninitialized_PausableImplTest is Uninitialized_PausableImplBase, Uninitialized_OwnableImplTest {
+    function setUp() public virtual override(Uninitialized_PausableImplBase, Uninitialized_OwnableImplBase) {
+        Uninitialized_PausableImplBase.setUp();
+    }
+
+    function _initialize() internal virtual override(Uninitialized_PausableImplBase, Uninitialized_OwnableImplBase) {
+        Uninitialized_PausableImplBase._initialize();
+    }
+
+    /// -----------------------------------------------------------------------
+    ///  init
+    /// -----------------------------------------------------------------------
+
+    function test_init_setsPaused() public {
+        _initialize();
+        assertEq($pausable.paused(), $paused);
+    }
+
+    function testFuzz_init_setsPaused(bool paused_) public {
+        $paused = paused_;
+
+        _initialize();
+        assertEq($pausable.paused(), $paused);
+    }
+}
+
+contract Initialized_PausableImplTest is Initialized_PausableImplBase, Initialized_OwnableImplTest {
+    function setUp() public virtual override(Initialized_PausableImplBase, Initialized_OwnableImplBase) {
+        Initialized_PausableImplBase.setUp();
+    }
+
+    function _initialize() internal virtual override(Initialized_PausableImplBase, Uninitialized_OwnableImplBase) {
+        Initialized_PausableImplBase._initialize();
+    }
+
+    /// -----------------------------------------------------------------------
+    /// setsPaused
+    /// -----------------------------------------------------------------------
+
+    function test_RevertWhen_CallerNotOwner_setPaused() public callerNotOwner($notOwner) {
+        vm.expectRevert(Unauthorized.selector);
+        $pausable.setPaused($paused);
+    }
+
+    function testFuzz_RevertWhen_CallerNotOwner_setPaused(address notOwner_, bool paused_)
+        public
+        callerNotOwner(notOwner_)
+    {
+        $paused = paused_;
+
+        test_RevertWhen_CallerNotOwner_setPaused();
+    }
+
+    function test_setPaused_setsPaused() public callerOwner {
+        $pausable.setPaused($paused);
+        assertEq($pausable.paused(), $paused);
+    }
+
+    function testFuzz_setPaused_setsPaused(bool paused_) public callerOwner {
+        $paused = paused_;
+
+        test_setPaused_setsPaused();
+    }
+
+    function test_setPaused_emitsSetPaused() public callerOwner {
+        _expectEmit();
+        emit SetPaused($paused);
+        $pausable.setPaused($paused);
+    }
+
+    function testFuzz_setPaused_emitsSetPaused(bool paused_) public callerOwner {
+        $paused = paused_;
+
+        test_setPaused_emitsSetPaused();
+    }
+}
