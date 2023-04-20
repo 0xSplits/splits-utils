@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
-import {Initialized_OwnableImplBase, Uninitialized_OwnableImplBase} from "./OwnableImplStateTree.sol";
+import {Initialized_OwnableImplBase, Uninitialized_OwnableImplBase} from "./OwnableImplBase.t.sol";
 
 contract Uninitialized_OwnableImplTest is Uninitialized_OwnableImplBase {
     /// -----------------------------------------------------------------------

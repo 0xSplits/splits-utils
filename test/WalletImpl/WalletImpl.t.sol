@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
 import {
     Initialized_OwnableImplBase,
@@ -9,30 +9,26 @@ import {
     Uninitialized_OwnableImplBase,
     Uninitialized_OwnableImplTest
 } from "../OwnableImpl/OwnableImpl.t.sol";
-import {Initialized_WalletImplBase, WalletImplHarness, Uninitialized_WalletImplBase} from "./WalletImplStateTree.sol";
+import {Initialized_WalletImplBase, WalletImplHarness, Uninitialized_WalletImplBase} from "./WalletImplBase.t.sol";
 import {WalletImpl} from "../../src/WalletImpl.sol";
 
-contract Uninitialized_WalletImplTest is Uninitialized_WalletImplBase, Uninitialized_OwnableImplTest {
-    function setUp() public virtual override(Uninitialized_WalletImplBase, Uninitialized_OwnableImplBase) {
-        Uninitialized_WalletImplBase.setUp();
+contract Uninitialized_WalletImplTest is Uninitialized_OwnableImplTest, Uninitialized_WalletImplBase {
+    function setUp() public virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
+        super.setUp();
     }
 
-    function _initialize() internal virtual override(Uninitialized_WalletImplBase, Uninitialized_OwnableImplBase) {
-        Uninitialized_WalletImplBase._initialize();
+    function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
+        super._initialize();
     }
 }
 
-contract Initialized_WalletImplTest is Initialized_WalletImplBase, Initialized_OwnableImplTest {
-    function setUp() public virtual override(Initialized_WalletImplBase, Initialized_OwnableImplBase) {
-        Initialized_WalletImplBase.setUp();
+contract Initialized_WalletImplTest is Initialized_OwnableImplTest, Initialized_WalletImplBase {
+    function setUp() public virtual override(Initialized_OwnableImplBase, Initialized_WalletImplBase) {
+        super.setUp();
     }
 
-    function _setUp() internal virtual override(Initialized_WalletImplBase, Initialized_OwnableImplBase) {
-        Initialized_WalletImplBase._setUp();
-    }
-
-    function _initialize() internal virtual override(Initialized_WalletImplBase, Uninitialized_OwnableImplBase) {
-        Initialized_WalletImplBase._initialize();
+    function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Initialized_WalletImplBase) {
+        super._initialize();
     }
 
     /// -----------------------------------------------------------------------

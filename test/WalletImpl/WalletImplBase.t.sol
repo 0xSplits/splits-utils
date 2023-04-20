@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
 import {
     Initialized_OwnableImplBase,
     OwnableImplHarness,
     Uninitialized_OwnableImplBase
-} from "../OwnableImpl/OwnableImplStateTree.sol";
+} from "../OwnableImpl/OwnableImplBase.t.sol";
 
 import {WalletImpl} from "../../src/WalletImpl.sol";
 
@@ -41,18 +41,26 @@ abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase 
     event ExecCalls(WalletImpl.Call[] calls);
 
     function setUp() public virtual override {
-        super.setUp();
-        _setUp();
+        // using super calls out to Initialized_OwnableImplBase.setUp() from Initialized_WalletImplTest
+        /* super.setUp(); */
+        Uninitialized_OwnableImplBase.setUp();
+        WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
+        calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
+        _setUpWalletImplState({wallet_: address(new WalletImplHarness()), calls_: calls});
     }
 
-    function _setUp() internal virtual {
-        $wallet = new WalletImplHarness();
-        _deal({account: address($wallet)});
-        vm.deal({account: address($wallet), newBalance: 1 << 96});
+    function _setUpWalletImplState(address wallet_, WalletImpl.Call[] memory calls_) internal virtual {
+        $wallet = WalletImplHarness(wallet_);
+        $ownable = OwnableImplHarness(wallet_);
 
-        $calls.push(WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"}));
+        delete $calls;
+        uint256 length = calls_.length;
+        for (uint256 i; i < length; i++) {
+            $calls.push(calls_[i]);
+        }
 
-        $ownable = OwnableImplHarness((address($wallet)));
+        deal({token: address(mockERC20), to: wallet_, give: 1 << 96});
+        vm.deal({account: wallet_, newBalance: 1 << 96});
     }
 
     function _initialize() internal virtual override {
@@ -92,18 +100,14 @@ abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase 
     }
 }
 
-abstract contract Initialized_WalletImplBase is Uninitialized_WalletImplBase, Initialized_OwnableImplBase {
-    function setUp() public virtual override(Uninitialized_WalletImplBase, Initialized_OwnableImplBase) {
-        Uninitialized_WalletImplBase.setUp();
-    }
-
-    function _setUp() internal virtual override(Uninitialized_WalletImplBase, Initialized_OwnableImplBase) {
-        Uninitialized_WalletImplBase._setUp();
+abstract contract Initialized_WalletImplBase is Initialized_OwnableImplBase, Uninitialized_WalletImplBase {
+    function setUp() public virtual override(Initialized_OwnableImplBase, Uninitialized_WalletImplBase) {
+        super.setUp();
         _initialize();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
-        Uninitialized_WalletImplBase._initialize();
+        super._initialize();
     }
 }
 

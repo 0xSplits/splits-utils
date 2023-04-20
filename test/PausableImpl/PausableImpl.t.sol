@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
 import {
     Initialized_OwnableImplBase,
@@ -10,18 +10,16 @@ import {
     Uninitialized_OwnableImplTest
 } from "../OwnableImpl/OwnableImpl.t.sol";
 import {
-    Initialized_PausableImplBase,
-    PausableImplHarness,
-    Uninitialized_PausableImplBase
-} from "./PausableImplStateTree.sol";
+    Initialized_PausableImplBase, PausableImplHarness, Uninitialized_PausableImplBase
+} from "./PausableImplBase.t.sol";
 
-contract Uninitialized_PausableImplTest is Uninitialized_PausableImplBase, Uninitialized_OwnableImplTest {
-    function setUp() public virtual override(Uninitialized_PausableImplBase, Uninitialized_OwnableImplBase) {
-        Uninitialized_PausableImplBase.setUp();
+contract Uninitialized_PausableImplTest is Uninitialized_OwnableImplTest, Uninitialized_PausableImplBase {
+    function setUp() public virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
+        super.setUp();
     }
 
-    function _initialize() internal virtual override(Uninitialized_PausableImplBase, Uninitialized_OwnableImplBase) {
-        Uninitialized_PausableImplBase._initialize();
+    function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
+        super._initialize();
     }
 
     /// -----------------------------------------------------------------------
@@ -41,13 +39,13 @@ contract Uninitialized_PausableImplTest is Uninitialized_PausableImplBase, Unini
     }
 }
 
-contract Initialized_PausableImplTest is Initialized_PausableImplBase, Initialized_OwnableImplTest {
-    function setUp() public virtual override(Initialized_PausableImplBase, Initialized_OwnableImplBase) {
-        Initialized_PausableImplBase.setUp();
+contract Initialized_PausableImplTest is Initialized_OwnableImplTest, Initialized_PausableImplBase {
+    function setUp() public virtual override(Initialized_OwnableImplBase, Initialized_PausableImplBase) {
+        super.setUp();
     }
 
-    function _initialize() internal virtual override(Initialized_PausableImplBase, Uninitialized_OwnableImplBase) {
-        Initialized_PausableImplBase._initialize();
+    function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Initialized_PausableImplBase) {
+        super._initialize();
     }
 
     /// -----------------------------------------------------------------------

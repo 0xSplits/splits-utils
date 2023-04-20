@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
 import {OwnableImpl} from "../../src/OwnableImpl.sol";
 
@@ -21,11 +21,19 @@ abstract contract Uninitialized_OwnableImplBase is BaseTest {
 
     function setUp() public virtual override {
         super.setUp();
-        _setUp({owner_: users.alice, nextOwner_: users.bob, notOwner_: users.eve});
+        _setUpOwnableImplState({
+            ownable_: address(new OwnableImplHarness()),
+            owner_: users.alice,
+            nextOwner_: users.bob,
+            notOwner_: users.eve
+        });
     }
 
-    function _setUp(address owner_, address nextOwner_, address notOwner_) internal virtual {
-        $ownable = new OwnableImplHarness();
+    function _setUpOwnableImplState(address ownable_, address owner_, address nextOwner_, address notOwner_)
+        internal
+        virtual
+    {
+        $ownable = OwnableImplHarness(ownable_);
         $owner = owner_;
         $nextOwner = nextOwner_;
         $notOwner = notOwner_;
@@ -62,10 +70,6 @@ abstract contract Uninitialized_OwnableImplBase is BaseTest {
 abstract contract Initialized_OwnableImplBase is Uninitialized_OwnableImplBase {
     function setUp() public virtual override {
         super.setUp();
-        _setUp();
-    }
-
-    function _setUp() internal virtual {
         _initialize();
     }
 }

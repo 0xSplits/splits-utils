@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
-import "../base.t.sol";
+import "../Base.t.sol";
 
 import {
     Initialized_OwnableImplBase,
     OwnableImplHarness,
     Uninitialized_OwnableImplBase
-} from "../OwnableImpl/OwnableImplStateTree.sol";
+} from "../OwnableImpl/OwnableImplBase.t.sol";
 import {PausableImpl} from "../../src/PausableImpl.sol";
 
 /// State tree
@@ -23,14 +23,16 @@ abstract contract Uninitialized_PausableImplBase is Uninitialized_OwnableImplBas
     bool $paused;
 
     function setUp() public virtual override {
-        super.setUp();
-        _setUp({paused_: false});
+        // using super calls out to Initialized_OwnableImplBase.setUp() from Initialized_PausableImplTest
+        /* super.setUp(); */
+        Uninitialized_OwnableImplBase.setUp();
+        _setUpPausableImplState({pausable_: address(new PausableImplHarness()), paused_: false});
     }
 
-    function _setUp(bool paused_) internal virtual {
-        $pausable = new PausableImplHarness();
+    function _setUpPausableImplState(address pausable_, bool paused_) internal virtual {
+        $pausable = PausableImplHarness(pausable_);
+        $ownable = OwnableImplHarness(pausable_);
         $paused = paused_;
-        $ownable = OwnableImplHarness(address($pausable));
     }
 
     function _initialize() internal virtual override {
@@ -38,14 +40,14 @@ abstract contract Uninitialized_PausableImplBase is Uninitialized_OwnableImplBas
     }
 }
 
-abstract contract Initialized_PausableImplBase is Uninitialized_PausableImplBase, Initialized_OwnableImplBase {
-    function setUp() public virtual override(Uninitialized_PausableImplBase, Initialized_OwnableImplBase) {
-        Uninitialized_PausableImplBase.setUp();
-        _setUp();
+abstract contract Initialized_PausableImplBase is Initialized_OwnableImplBase, Uninitialized_PausableImplBase {
+    function setUp() public virtual override(Initialized_OwnableImplBase, Uninitialized_PausableImplBase) {
+        super.setUp();
+        _initialize();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
-        Uninitialized_PausableImplBase._initialize();
+        super._initialize();
     }
 
     /// -----------------------------------------------------------------------
