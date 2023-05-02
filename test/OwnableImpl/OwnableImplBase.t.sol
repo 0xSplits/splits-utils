@@ -20,7 +20,7 @@ abstract contract Uninitialized_OwnableImplBase is BaseTest {
     event OwnershipTransferred(address indexed oldOwner, address indexed nextOwner);
 
     function setUp() public virtual override {
-        super.setUp();
+        BaseTest.setUp();
         _setUpOwnableImplState({
             ownable_: address(new OwnableImplHarness()),
             owner_: users.alice,
@@ -69,7 +69,7 @@ abstract contract Uninitialized_OwnableImplBase is BaseTest {
 
 abstract contract Initialized_OwnableImplBase is Uninitialized_OwnableImplBase {
     function setUp() public virtual override {
-        super.setUp();
+        Uninitialized_OwnableImplBase.setUp();
         _initialize();
     }
 }

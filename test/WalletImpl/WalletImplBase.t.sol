@@ -41,8 +41,6 @@ abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase 
     event ExecCalls(WalletImpl.Call[] calls);
 
     function setUp() public virtual override {
-        // using super calls out to Initialized_OwnableImplBase.setUp() from Initialized_WalletImplTest
-        /* super.setUp(); */
         Uninitialized_OwnableImplBase.setUp();
         WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
         calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
@@ -102,12 +100,12 @@ abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase 
 
 abstract contract Initialized_WalletImplBase is Initialized_OwnableImplBase, Uninitialized_WalletImplBase {
     function setUp() public virtual override(Initialized_OwnableImplBase, Uninitialized_WalletImplBase) {
-        super.setUp();
+        Uninitialized_WalletImplBase.setUp();
         _initialize();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
-        super._initialize();
+        Uninitialized_WalletImplBase._initialize();
     }
 }
 

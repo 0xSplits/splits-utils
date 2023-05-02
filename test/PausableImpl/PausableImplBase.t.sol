@@ -23,8 +23,6 @@ abstract contract Uninitialized_PausableImplBase is Uninitialized_OwnableImplBas
     bool $paused;
 
     function setUp() public virtual override {
-        // using super calls out to Initialized_OwnableImplBase.setUp() from Initialized_PausableImplTest
-        /* super.setUp(); */
         Uninitialized_OwnableImplBase.setUp();
         _setUpPausableImplState({pausable_: address(new PausableImplHarness()), paused_: false});
     }
@@ -42,12 +40,12 @@ abstract contract Uninitialized_PausableImplBase is Uninitialized_OwnableImplBas
 
 abstract contract Initialized_PausableImplBase is Initialized_OwnableImplBase, Uninitialized_PausableImplBase {
     function setUp() public virtual override(Initialized_OwnableImplBase, Uninitialized_PausableImplBase) {
-        super.setUp();
+        Uninitialized_PausableImplBase.setUp();
         _initialize();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
-        super._initialize();
+        Uninitialized_PausableImplBase._initialize();
     }
 
     /// -----------------------------------------------------------------------
