@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.17;
 
+import {ERC1155TokenReceiver} from "solmate/tokens/ERC1155.sol";
+import {ERC721TokenReceiver} from "solmate/tokens/ERC721.sol";
+
 import {OwnableImpl} from "./OwnableImpl.sol";
 
 /// @title Wallet Implementation
 /// @author 0xSplits
 /// @notice Minimal smart wallet clone-implementation
-abstract contract WalletImpl is OwnableImpl {
+abstract contract WalletImpl is OwnableImpl, ERC721TokenReceiver, ERC1155TokenReceiver {
     struct Call {
         address to;
         uint256 value;

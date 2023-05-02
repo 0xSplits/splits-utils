@@ -3,6 +3,8 @@ pragma solidity ^0.8.17;
 
 import "../Base.t.sol";
 
+import {ERC1155TokenReceiverBase} from "../ERC1155TokenReceiver/ERC1155TokenReceiverBase.t.sol";
+import {ERC721TokenReceiverBase} from "../ERC721TokenReceiver/ERC721TokenReceiverBase.t.sol";
 import {
     Initialized_OwnableImplBase,
     OwnableImplHarness,
@@ -15,7 +17,11 @@ import {WalletImpl} from "../../src/WalletImpl.sol";
 ///  Uninitialized
 ///  Initialized
 
-abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase {
+abstract contract Uninitialized_WalletImplBase is
+    Uninitialized_OwnableImplBase,
+    ERC721TokenReceiverBase,
+    ERC1155TokenReceiverBase
+{
     // if you crank these values up too much, forge will stack overflow
     uint256 constant FUZZ_CALLS_MAX_LENGTH = 4;
     uint256 constant FUZZ_CALL_MAX_VALUE = 1e18;
@@ -40,16 +46,53 @@ abstract contract Uninitialized_WalletImplBase is Uninitialized_OwnableImplBase 
 
     event ExecCalls(WalletImpl.Call[] calls);
 
-    function setUp() public virtual override {
+    function setUp()
+        public
+        virtual
+        override(Uninitialized_OwnableImplBase, ERC721TokenReceiverBase, ERC1155TokenReceiverBase)
+    {
         Uninitialized_OwnableImplBase.setUp();
-        WalletImpl.Call[] memory calls = new WalletImpl.Call[](1);
-        calls[0] = WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"});
-        _setUpWalletImplState({wallet_: address(new WalletImplHarness()), calls_: calls});
+
+        $calls.push(WalletImpl.Call({to: users.alice, value: 1 ether, data: "0x123456789"}));
+
+        $erc1155Ids.push(0);
+        $erc1155Ids.push(1);
+        $erc1155Amounts.push(1);
+        $erc1155Amounts.push(2);
+
+        _setUpWalletImplState({
+            wallet_: address(new WalletImplHarness()),
+            calls_: $calls,
+            erc721Amount_: 1,
+            erc1155Id_: 0,
+            erc1155Amount_: 1,
+            erc1155Data_: "",
+            erc1155Ids_: $erc1155Ids,
+            erc1155Amounts_: $erc1155Amounts
+        });
     }
 
-    function _setUpWalletImplState(address wallet_, WalletImpl.Call[] memory calls_) internal virtual {
+    function _setUpWalletImplState(
+        address wallet_,
+        WalletImpl.Call[] memory calls_,
+        uint256 erc721Amount_,
+        uint256 erc1155Id_,
+        uint256 erc1155Amount_,
+        bytes memory erc1155Data_,
+        uint256[] memory erc1155Ids_,
+        uint256[] memory erc1155Amounts_
+    ) internal virtual {
         $wallet = WalletImplHarness(wallet_);
         $ownable = OwnableImplHarness(wallet_);
+        _setUpERC721TokenReceiverTest(wallet_, erc721Amount_);
+        _setUpERC1155TokenReceiverTest({
+            erc1155TokenReceiver_: wallet_,
+            id_: erc1155Id_,
+            amount_: erc1155Amount_,
+            data_: erc1155Data_,
+            ids_: erc1155Ids_,
+            amounts_: erc1155Amounts_
+        });
 
         delete $calls;
         uint256 length = calls_.length;
