@@ -54,11 +54,13 @@ abstract contract Initialized_PausableImplBase is Initialized_OwnableImplBase, U
 
     modifier paused() {
         assertTrue($paused);
+        assertTrue($pausable.paused());
         _;
     }
 
     modifier unpaused() {
         assertFalse($paused);
+        assertFalse($pausable.paused());
         _;
     }
 }
