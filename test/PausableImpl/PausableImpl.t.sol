@@ -15,11 +15,11 @@ import {
 
 contract Uninitialized_PausableImplTest is Uninitialized_OwnableImplTest, Uninitialized_PausableImplBase {
     function setUp() public virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
-        super.setUp();
+        Uninitialized_PausableImplBase.setUp();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_PausableImplBase) {
-        super._initialize();
+        Uninitialized_PausableImplBase._initialize();
     }
 
     /// -----------------------------------------------------------------------
@@ -41,11 +41,11 @@ contract Uninitialized_PausableImplTest is Uninitialized_OwnableImplTest, Uninit
 
 contract Initialized_PausableImplTest is Initialized_OwnableImplTest, Initialized_PausableImplBase {
     function setUp() public virtual override(Initialized_OwnableImplBase, Initialized_PausableImplBase) {
-        super.setUp();
+        Initialized_PausableImplBase.setUp();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Initialized_PausableImplBase) {
-        super._initialize();
+        Initialized_PausableImplBase._initialize();
     }
 
     /// -----------------------------------------------------------------------

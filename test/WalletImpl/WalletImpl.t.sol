@@ -14,21 +14,21 @@ import {WalletImpl} from "../../src/WalletImpl.sol";
 
 contract Uninitialized_WalletImplTest is Uninitialized_OwnableImplTest, Uninitialized_WalletImplBase {
     function setUp() public virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
-        super.setUp();
+        Uninitialized_WalletImplBase.setUp();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
-        super._initialize();
+        Uninitialized_WalletImplBase._initialize();
     }
 }
 
 contract Initialized_WalletImplTest is Initialized_OwnableImplTest, Initialized_WalletImplBase {
     function setUp() public virtual override(Initialized_OwnableImplBase, Initialized_WalletImplBase) {
-        super.setUp();
+        Initialized_WalletImplBase.setUp();
     }
 
     function _initialize() internal virtual override(Uninitialized_OwnableImplBase, Initialized_WalletImplBase) {
-        super._initialize();
+        Initialized_WalletImplBase._initialize();
     }
 
     /// -----------------------------------------------------------------------
