@@ -6,6 +6,8 @@ import "forge-std/Test.sol";
 import {AddressUtils, ADDRESS_ZERO} from "../src/AddressUtils.sol";
 import {IWETH9} from "../src/interfaces/external/IWETH9.sol";
 import {MockERC20} from "./mocks/MockERC20.sol";
+import {MockERC721} from "./mocks/MockERC721.sol";
+import {MockERC1155} from "./mocks/MockERC1155.sol";
 import {TokenUtils} from "../src/TokenUtils.sol";
 
 /// @dev base inspired by PaulRBerg
@@ -52,6 +54,8 @@ abstract contract BaseTest is Test {
 
     Users public users;
     address public mockERC20;
+    address public mockERC721;
+    address public mockERC1155;
 
     /// -----------------------------------------------------------------------
     /// functions
@@ -62,7 +66,9 @@ abstract contract BaseTest is Test {
     /// -----------------------------------------------------------------------
 
     function setUp() public virtual {
-        mockERC20 = address(new MockERC20("Test Token", "TOK", ERC_DECIMALS));
+        mockERC20 = address(new MockERC20("Test ERC20", "T20", ERC_DECIMALS));
+        mockERC721 = address(new MockERC721("Test ERC721", "T721"));
+        mockERC1155 = address(new MockERC1155());
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 

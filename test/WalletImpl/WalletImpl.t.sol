@@ -3,6 +3,8 @@ pragma solidity ^0.8.17;
 
 import "../Base.t.sol";
 
+import {ERC1155TokenReceiverBase, ERC1155TokenReceiverTest} from "../ERC1155TokenReceiver/ERC1155TokenReceiver.t.sol";
+import {ERC721TokenReceiverBase, ERC721TokenReceiverTest} from "../ERC721TokenReceiver/ERC721TokenReceiver.t.sol";
 import {
     Initialized_OwnableImplBase,
     Initialized_OwnableImplTest,
@@ -12,8 +14,19 @@ import {
 import {Initialized_WalletImplBase, WalletImplHarness, Uninitialized_WalletImplBase} from "./WalletImplBase.t.sol";
 import {WalletImpl} from "../../src/WalletImpl.sol";
 
-contract Uninitialized_WalletImplTest is Uninitialized_OwnableImplTest, Uninitialized_WalletImplBase {
-    function setUp() public virtual override(Uninitialized_OwnableImplBase, Uninitialized_WalletImplBase) {
+contract Uninitialized_WalletImplTest is
+    Uninitialized_OwnableImplTest,
+    ERC721TokenReceiverTest,
+    ERC1155TokenReceiverTest,
+    Uninitialized_WalletImplBase
+{
+    function setUp()
+        public
+        virtual
+        override(
+            Uninitialized_OwnableImplBase, ERC721TokenReceiverBase, ERC1155TokenReceiverBase, Uninitialized_WalletImplBase
+        )
+    {
         Uninitialized_WalletImplBase.setUp();
     }
 
