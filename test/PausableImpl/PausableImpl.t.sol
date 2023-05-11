@@ -52,18 +52,18 @@ contract Initialized_PausableImplTest is Initialized_OwnableImplTest, Initialize
     /// setsPaused
     /// -----------------------------------------------------------------------
 
-    function test_RevertWhen_CallerNotOwner_setPaused() public callerNotOwner($notOwner) {
+    function test_revertWhen_callerNotOwner_setPaused() public callerNotOwner($notOwner) {
         vm.expectRevert(Unauthorized.selector);
         $pausable.setPaused($paused);
     }
 
-    function testFuzz_RevertWhen_CallerNotOwner_setPaused(address notOwner_, bool paused_)
+    function testFuzz_revertWhen_callerNotOwner_setPaused(address notOwner_, bool paused_)
         public
         callerNotOwner(notOwner_)
     {
         $paused = paused_;
 
-        test_RevertWhen_CallerNotOwner_setPaused();
+        test_revertWhen_callerNotOwner_setPaused();
     }
 
     function test_setPaused_setsPaused() public callerOwner {

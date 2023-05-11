@@ -48,12 +48,12 @@ contract Initialized_WalletImplTest is Initialized_OwnableImplTest, Initialized_
     /// execCalls
     /// -----------------------------------------------------------------------
 
-    function test_RevertWhen_CallerNotOwner_execCalls() public callerNotOwner($notOwner) {
+    function test_revertWhen_callerNotOwner_execCalls() public callerNotOwner($notOwner) {
         vm.expectRevert(Unauthorized.selector);
         $wallet.execCalls($calls);
     }
 
-    function testFuzz_RevertWhen_CallerNotOwner_execCalls(
+    function testFuzz_revertWhen_callerNotOwner_execCalls(
         address owner_,
         address notOwner_,
         Uninitialized_WalletImplBase.FuzzCallsParams calldata fuzzCalls_

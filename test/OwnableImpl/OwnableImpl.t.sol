@@ -35,7 +35,7 @@ contract Uninitialized_OwnableImplTest is Uninitialized_OwnableImplBase {
     ///  transferOwnership
     /// -----------------------------------------------------------------------
 
-    function testFuzz_RevertWhen_CallerNotOwner_transferOwnership(address owner_, address notOwner_)
+    function testFuzz_revertWhen_callerNotOwner_transferOwnership(address owner_, address notOwner_)
         public
         callerNotOwner(notOwner_)
     {
@@ -71,13 +71,13 @@ contract Initialized_OwnableImplTest is Initialized_OwnableImplBase {
     ///  transferOwnership
     /// -----------------------------------------------------------------------
 
-    function test_RevertWhen_CallerNotOwner_transferOwnership() public callerNotOwner($notOwner) {
+    function test_revertWhen_callerNotOwner_transferOwnership() public callerNotOwner($notOwner) {
         vm.expectRevert(Unauthorized.selector);
         $ownable.transferOwnership($notOwner);
     }
 
-    function testFuzz_RevertWhen_CallerNotOwner_transferOwnership(address notOwner_) public callerNotOwner(notOwner_) {
-        test_RevertWhen_CallerNotOwner_transferOwnership();
+    function testFuzz_revertWhen_callerNotOwner_transferOwnership(address notOwner_) public callerNotOwner(notOwner_) {
+        test_revertWhen_callerNotOwner_transferOwnership();
     }
 
     function test_transferOwnership_setsOwner() public callerOwner {
