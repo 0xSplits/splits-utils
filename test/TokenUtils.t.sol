@@ -33,7 +33,7 @@ contract TokenUtilsTest is BaseTest {
 
     function test_decimals_nonETH() public {
         vm.expectCall(mockERC20, abi.encodeCall(MockERC20(mockERC20).decimals, ()));
-        assertEq(tokenUtils.exposed_decimals(mockERC20), ERC_DECIMALS);
+        assertEq(tokenUtils.exposed_decimals(mockERC20), MOCK_ERC20_DECIMALS);
     }
 
     function test_balanceOf_eth() public {

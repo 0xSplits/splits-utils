@@ -45,7 +45,7 @@ abstract contract BaseTest is Test {
     address constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
 
     address internal constant ETH_ADDRESS = address(0);
-    uint8 internal constant ERC_DECIMALS = 24;
+    uint8 internal constant MOCK_ERC20_DECIMALS = 24;
     uint32 internal constant PERCENTAGE_SCALE = 100_00_00; // = 1e6 = 100%
 
     /// -----------------------------------------------------------------------
@@ -66,7 +66,7 @@ abstract contract BaseTest is Test {
     /// -----------------------------------------------------------------------
 
     function setUp() public virtual {
-        mockERC20 = address(new MockERC20("Test ERC20", "T20", ERC_DECIMALS));
+        mockERC20 = address(new MockERC20("Test ERC20", "T20", MOCK_ERC20_DECIMALS));
         mockERC721 = address(new MockERC721("Test ERC721", "T721"));
         mockERC1155 = address(new MockERC1155());
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
@@ -97,7 +97,7 @@ abstract contract BaseTest is Test {
 
     function _deal(address account) internal {
         vm.deal({account: account, newBalance: 1_000 ether});
-        deal({token: address(mockERC20), to: account, give: 1_000_000 * (10 ** ERC_DECIMALS)});
+        deal({token: address(mockERC20), to: account, give: 1_000_000 * (10 ** MOCK_ERC20_DECIMALS)});
     }
 
     function _deal(address account, address token, uint256 amount) internal {
