@@ -72,14 +72,6 @@ abstract contract BaseTest is Test {
         users = Users({alice: _createUser("Alice"), bob: _createUser("Bob"), eve: _createUser("Eve")});
     }
 
-    // doesn't appear to work; maybe security blocker for libs pulling envs?
-    /* function setUpFork() public virtual { */
-    /*     setUp(); */
-
-    /*     string memory MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL"); */
-    /*     vm.createSelectFork(MAINNET_RPC_URL, BLOCK_NUMBER); */
-    /* } */
-
     /// -----------------------------------------------------------------------
     /// functions - private & internal
     /// -----------------------------------------------------------------------
