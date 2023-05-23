@@ -21,3 +21,7 @@ To ease external integrations and re-use frequent development / testing patterns
 `forge t` - compile & test the contracts
 
 `forge t -vvv` - produce traces for any failing tests
+
+### Natspec
+
+`forge doc --serve --port 4000` - serves natspec docs at http://localhost:4000/
