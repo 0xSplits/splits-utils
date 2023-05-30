@@ -52,9 +52,13 @@ contract Initialized_PausableImplTest is Initialized_OwnableImplTest, Initialize
     /// setsPaused
     /// -----------------------------------------------------------------------
 
-    function test_revertWhen_callerNotOwner_setPaused() public callerNotOwner($notOwner) {
+    function _test_revertWhen_callerNotOwner_setPaused() internal {
         vm.expectRevert(Unauthorized.selector);
         $pausable.setPaused($paused);
+    }
+
+    function test_revertWhen_callerNotOwner_setPaused() public callerNotOwner($notOwner) {
+        _test_revertWhen_callerNotOwner_setPaused();
     }
 
     function testFuzz_revertWhen_callerNotOwner_setPaused(address notOwner_, bool paused_)
@@ -63,29 +67,37 @@ contract Initialized_PausableImplTest is Initialized_OwnableImplTest, Initialize
     {
         $paused = paused_;
 
-        test_revertWhen_callerNotOwner_setPaused();
+        _test_revertWhen_callerNotOwner_setPaused();
+    }
+
+    function _test_setPaused_setsPaused() internal {
+        $pausable.setPaused($paused);
+        assertEq($pausable.paused(), $paused);
     }
 
     function test_setPaused_setsPaused() public callerOwner {
-        $pausable.setPaused($paused);
-        assertEq($pausable.paused(), $paused);
+        _test_setPaused_setsPaused();
     }
 
     function testFuzz_setPaused_setsPaused(bool paused_) public callerOwner {
         $paused = paused_;
 
-        test_setPaused_setsPaused();
+        _test_setPaused_setsPaused();
     }
 
-    function test_setPaused_emitsSetPaused() public callerOwner {
+    function _test_setPaused_emitsSetPaused() internal {
         _expectEmit();
         emit SetPaused($paused);
         $pausable.setPaused($paused);
     }
 
+    function test_setPaused_emitsSetPaused() public callerOwner {
+        _test_setPaused_emitsSetPaused();
+    }
+
     function testFuzz_setPaused_emitsSetPaused(bool paused_) public callerOwner {
         $paused = paused_;
 
-        test_setPaused_emitsSetPaused();
+        _test_setPaused_emitsSetPaused();
     }
 }

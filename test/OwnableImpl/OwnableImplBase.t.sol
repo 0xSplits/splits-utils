@@ -50,19 +50,19 @@ abstract contract Uninitialized_OwnableImplBase is BaseTest {
     modifier callerNotOwner(address notOwner_) {
         vm.assume(notOwner_ != $owner);
         $notOwner = notOwner_;
-        changePrank(notOwner_);
+        vm.startPrank(notOwner_);
         _;
     }
 
     modifier callerOwner() {
-        changePrank($owner);
+        vm.startPrank($owner);
         _;
     }
 
     modifier callerFuzzOwner(address owner_) {
         $owner = owner_;
         _initialize();
-        changePrank($owner);
+        vm.startPrank($owner);
         _;
     }
 }

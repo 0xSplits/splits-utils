@@ -71,35 +71,47 @@ contract Initialized_OwnableImplTest is Initialized_OwnableImplBase {
     ///  transferOwnership
     /// -----------------------------------------------------------------------
 
-    function test_revertWhen_callerNotOwner_transferOwnership() public callerNotOwner($notOwner) {
+    function _test_revertWhen_callerNotOwner_transferOwnership() internal {
         vm.expectRevert(Unauthorized.selector);
         $ownable.transferOwnership($notOwner);
     }
 
+    function test_revertWhen_callerNotOwner_transferOwnership() public callerNotOwner($notOwner) {
+        _test_revertWhen_callerNotOwner_transferOwnership();
+    }
+
     function testFuzz_revertWhen_callerNotOwner_transferOwnership(address notOwner_) public callerNotOwner(notOwner_) {
-        test_revertWhen_callerNotOwner_transferOwnership();
+        _test_revertWhen_callerNotOwner_transferOwnership();
+    }
+
+    function _test_transferOwnership_setsOwner() internal {
+        $ownable.transferOwnership($nextOwner);
+        assertEq($ownable.owner(), $nextOwner);
     }
 
     function test_transferOwnership_setsOwner() public callerOwner {
-        $ownable.transferOwnership($nextOwner);
-        assertEq($ownable.owner(), $nextOwner);
+        _test_transferOwnership_setsOwner();
     }
 
     function testFuzz_transferOwnership_setsOwner(address nextOwner_) public callerOwner {
         $nextOwner = nextOwner_;
 
-        test_transferOwnership_setsOwner();
+        _test_transferOwnership_setsOwner();
     }
 
-    function test_transferOwnership_emitsOwnershipTransferred() public callerOwner {
+    function _test_transferOwnership_emitsOwnershipTransferred() internal {
         _expectEmit();
         emit OwnershipTransferred($owner, $nextOwner);
         $ownable.transferOwnership($nextOwner);
     }
 
+    function test_transferOwnership_emitsOwnershipTransferred() public callerOwner {
+        _test_transferOwnership_emitsOwnershipTransferred();
+    }
+
     function testFuzz_transferOwnership_emitsOwnershipTransferred(address nextOwner_) public callerOwner {
         $nextOwner = nextOwner_;
 
-        test_transferOwnership_emitsOwnershipTransferred();
+        _test_transferOwnership_emitsOwnershipTransferred();
     }
 }
