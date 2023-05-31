@@ -2,7 +2,19 @@
 
 ## What
 
-Utilities re-used across the splits ecosystem.
+Utilities re-used across the splits ecosystem
+
+```
+AddressUtils - helper functions on addresses
+ConvertedQuotePair - sort converted quotes
+LibClone - modified minimal clone
+LibQuotes - sort & convert quotes
+LibRecipients - efficiently sorting splits' recipients onchain
+OwnableImpl - minimal ownable clone-implementation
+PausableImpl - minimal pausable clone-implementation
+TokenUtils - helper functions on tokens (including ETH as 0x0)
+WalletImpl - minimal smart wallet clone-implementation
+```
 
 ## Why
 
