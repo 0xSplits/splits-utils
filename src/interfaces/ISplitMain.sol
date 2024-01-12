@@ -103,4 +103,8 @@ interface ISplitMain {
     function getHash(address split) external view returns (bytes32);
 
     function getController(address split) external view returns (address);
+
+    function getERC20Balance(address account, address token) external view returns (uint256);
+
+    function getETHBalance(address account) external view returns (uint256);
 }
