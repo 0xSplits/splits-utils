@@ -2,7 +2,6 @@
 pragma solidity ^0.8.17;
 
 import {ISplitMain} from "./interfaces/ISplitMain.sol";
-import {IERC20} from "./interfaces/external/IERC20.sol";
 
 /// @title Wrapper for Distributing Splits
 /// @notice This contract is a wrapper for split main.
@@ -42,7 +41,7 @@ contract DistributeWrapper {
         address _distributorAddress,
         uint256 _amount
     ) external {
-        if (_split.balance < _amount) revert AmountNotPresent();
+        if (SPLIT_MAIN.getETHBalance(_split) < _amount) revert AmountNotPresent();
 
         SPLIT_MAIN.distributeETH(_split, _accounts, _percentAllocations, _distributorFee, _distributorAddress);
     }
@@ -56,7 +55,7 @@ contract DistributeWrapper {
         address _distributorAddress,
         uint256 _amount
     ) external {
-        if (IERC20(_token).balanceOf(_split) < _amount) revert AmountNotPresent();
+        if (SPLIT_MAIN.getERC20Balance(_split, _token) < _amount) revert AmountNotPresent();
 
         SPLIT_MAIN.distributeERC20(_split, _token, _accounts, _percentAllocations, _distributorFee, _distributorAddress);
     }

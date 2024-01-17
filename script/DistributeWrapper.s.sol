@@ -20,7 +20,7 @@ contract DistributeWrapperScript is Script {
         uint256 privKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privKey);
 
-        wrapper = new DistributeWrapper{salt: keccak256("0xSplits.distributeWrapper.v1")}({_splitMain: splitMain});
+        wrapper = new DistributeWrapper{salt: keccak256("0xSplits.distributeWrapper.v2")}({_splitMain: splitMain});
 
         vm.stopBroadcast();
 
